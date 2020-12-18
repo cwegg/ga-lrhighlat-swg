@@ -1,0 +1,5 @@
+outs:
+- md5: 5ede12ee479bab903dd5dbf8d3f2b5df.dir
+  size: 74076480
+  nfiles: 43
+  path: data_repo

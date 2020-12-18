@@ -1,0 +1,4 @@
+[core]
+    remote = cambridge
+['remote "cambridge"']
+    url = ssh://chris_wegg@cappc118.ast.cam.ac.uk/dvc
