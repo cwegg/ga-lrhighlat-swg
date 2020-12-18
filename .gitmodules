@@ -1,0 +1,3 @@
+[submodule "weave-workflow"]
+	path = weave-workflow
+	url = git@github.com:cwegg/weave-workflow.git
