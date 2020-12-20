@@ -52,4 +52,15 @@ stages:
         - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
       outs:
         - obs/${key}/04-guide-and-calib-stars
+  configure:
+    foreach:
+      ${submission}
+    do:
+      cmd: swg-workflow/configurefields.py --epoch 2021.5 --herts --sync --outdir obs/${key}/05-configured obs/${key}/04-guide-and-calib-stars/*.xml
+      deps:
+        - obs/${key}/04-guide-and-calib-stars
+        - swg-workflow/configurefields.py
+        - /soft/configure/configure
+      outs:
+        - obs/${key}/05-configured
 
