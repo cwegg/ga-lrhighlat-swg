@@ -2,6 +2,10 @@
 
 import yaml
 import argparse
+import os.path
+import os
+import copy
+import astropy.table
 
 from weaveworkflow.mos.workflow.mos_stage1 import create_mos_field_cat
 from astropy.table import Table
@@ -30,6 +34,11 @@ if __name__ == '__main__':
     mos_field_template = params['field_template']
 
     output_field_file = params['strands'][args.strand]['field_file']
+
+    output_directory = os.path.dirname(output_field_file)
+    if not os.path.isdir(output_directory):
+        os.makedirs(output_directory)
+
     task = params['strands'][args.strand]['footprint']
 
     # Reformat fits table into expected form
@@ -39,10 +48,17 @@ if __name__ == '__main__':
     field_table.rename_column('NAME', 'FIELD_NAME')
     field_table.rename_column('RA', 'FIELD_RA')
     field_table.rename_column('DEC', 'FIELD_DEC')
+
+    # Duplicate table for each survey
     surveys = task['surveys']
-    for targsrvy, max_fibres in zip(surveys['targsrvys'],surveys['max_fibres']):
+    per_survey_tables = []
+    for targsrvy, max_fibres in zip(surveys['targsrvys'], surveys[
+        'max_fibres']):
+        print(targsrvy)
         field_table['TARGSRVY'] = targsrvy
         field_table['MAX_FIBRES'] = max_fibres
+        per_survey_tables += [copy.deepcopy(field_table)]
+    field_table = astropy.table.vstack(per_survey_tables)
 
     trimester = task['keywords']['trimester']
     report_verbosity = task['keywords']['report_verbosity']
