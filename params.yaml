@@ -1,0 +1,75 @@
+field_template: 'weaveworkflow/mos/workflow/mos_stage1/aux/mos_field_template.fits'
+strands:
+  SV_exp1:
+    footprint:
+      footprint_file: 'data_repo/footprints/exp1_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-028']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    field_file: 'obs/01-field-files/SV_exp1_fields.fits'
+
+  SV_exp2:
+    footprint:
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    field_file: 'obs/01-field-files/SV_exp2_fields.fits'
+
+  pointed:
+    footprint:
+      footprint_file: 'data_repo/footprints/pointed_20AT1.fits'
+      surveys:
+        targsrvys: ['GA-LRhighlat']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    field_file: 'obs/01-field-files/pointed_20AT1_fields.fits'
+
+  shared:
+    footprint:
+      footprint_file: 'data_repo/footprints/shared_20AT1.fits'
+      surveys:
+        targsrvys: ['GA-LRhighlat', 'WQ', 'WL']
+        max_fibres: [630, 130, 130]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    field_file: 'obs/01-field-files/shared_20AT1_fields.fits'
+
+catalogues:
+  SV_exp1:
+    catalogue: 'catalogues/cat_exp1_SV.fits'
+    strand: 'SV_exp1'
+  SV_exp2:
+    catalogue: 'catalogues/cat_exp2_SV.fits'
+    strand: 'SV_exp2'
+  shared:
+    catalogue: 'catalogues/cat_shared_2021A1.fits'
+    strand: 'shared'
+  pointed:
+    catalogue: 'catalogues/cat_pointed_2021A1.fits'
+    strand: 'pointed'

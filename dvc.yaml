@@ -1,0 +1,55 @@
+stages:
+  make-field-files:
+    foreach:
+      ${strands}
+    do:
+      cmd: swg-workflow/make_field_files.py ${key}
+      params:
+        - strands.${key}.footprint
+      deps:
+        - ${item.footprint.footprint_file}
+        - swg-workflow/make_field_files.py
+      outs:
+        - ${item.field_file}
+  create-empty-xmls:
+    foreach:
+      ${strands}
+    do:
+      cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py ${item.field_file} --outdir obs/${key}/01-empty
+      deps:
+        - ${item.field_file}
+        - weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+      outs:
+        - obs/${key}/01-empty
+  add-targets:
+    foreach:
+      ${catalogues}
+    do:
+      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --outdir obs/${item.strand}/02-targets ${item.catalogue} obs/${item.strand}/01-empty/*
+      deps:
+        - obs/${item.strand}/01-empty
+        - ${item.catalogue}
+        - weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+      outs:
+        - obs/${item.strand}/02-targets
+  clean-xmls:
+    foreach:
+      ${strands}
+    do:
+      cmd: swg-workflow/clean_xml_targets.py --outdir obs/${key}/03-cleaned obs/${key}/02-targets/*
+      deps:
+        - obs/${key}/02-targets
+        - swg-workflow/clean_xml_targets.py
+      outs:
+        - obs/${key}/03-cleaned
+  add-guide-and-calib-stars:
+    foreach:
+      ${strands}
+    do:
+      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/04-guide-and-calib-stars obs/${key}/03-cleaned/*
+      deps:
+        - obs/${key}/03-cleaned
+        - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+      outs:
+        - obs/${key}/04-guide-and-calib-stars
+

@@ -1,4 +1,6 @@
 [core]
     remote = cambridge
+[feature]
+    parametrization = true
 ['remote "cambridge"']
     url = ssh://chris_wegg@cappc118.ast.cam.ac.uk/data2/weave/chris_wegg/dvc
