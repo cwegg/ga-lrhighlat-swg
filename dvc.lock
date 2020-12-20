@@ -35,8 +35,8 @@ make-field-files@SV_exp2:
     md5: e8be0825b25859997f9b4042b7184669
     size: 8640
   - path: swg-workflow/make_field_files.py
-    md5: c8b6df84f07c1a98a0a181ebddaad401
-    size: 1784
+    md5: cfbd5e4557551aca67a57a997a10c20a
+    size: 2172
   params:
     params.yaml:
       strands.SV_exp2.footprint:
@@ -55,7 +55,7 @@ make-field-files@SV_exp2:
           cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
   outs:
   - path: obs/01-field-files/SV_exp2_fields.fits
-    md5: 10a82f6b185fbaea739b7b466adc35a8
+    md5: f07d34a9efe0e0ff35f126b1d3eece9a
     size: 8640
 make-field-files@shared:
   cmd: swg-workflow/make_field_files.py shared
@@ -64,11 +64,11 @@ make-field-files@shared:
     md5: 2f0893a09281c766fba7f9870072504a
     size: 14400
   - path: swg-workflow/make_field_files.py
-    md5: c8b6df84f07c1a98a0a181ebddaad401
-    size: 1784
+    md5: 311b2688f15ff585ac79b2d7681eb263
+    size: 2205
   params:
     params.yaml:
-      strands.shared.footprint:
+      submission.shared.footprint:
         footprint_file: data_repo/footprints/shared_20AT1.fits
         surveys:
           targsrvys:
@@ -88,8 +88,8 @@ make-field-files@shared:
           cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
   outs:
   - path: obs/01-field-files/shared_20AT1_fields.fits
-    md5: e81b8f263ea197ca3b2f8d0619138163
-    size: 20160
+    md5: bb6e00d20b234aa29f667bb653009185
+    size: 46080
 make-field-files@pointed:
   cmd: swg-workflow/make_field_files.py pointed
   deps:
@@ -97,8 +97,8 @@ make-field-files@pointed:
     md5: 8ceba89e49f8216afa0fa8017ae57ae6
     size: 8640
   - path: swg-workflow/make_field_files.py
-    md5: c8b6df84f07c1a98a0a181ebddaad401
-    size: 1784
+    md5: b11b8b8a82aaf10adaece9c055a66574
+    size: 1951
   params:
     params.yaml:
       strands.pointed.footprint:
@@ -117,7 +117,7 @@ make-field-files@pointed:
           cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
   outs:
   - path: obs/01-field-files/pointed_20AT1_fields.fits
-    md5: 3bd15f47a71600800612a1a64087511f
+    md5: c2ec15b19ddb16fd2197853ddd3f4dc6
     size: 11520
 make-field-files@SV_exp1:
   cmd: swg-workflow/make_field_files.py SV_exp1
@@ -126,11 +126,11 @@ make-field-files@SV_exp1:
     md5: 6591319d7d74f3075d01eea7d36c3df1
     size: 8640
   - path: swg-workflow/make_field_files.py
-    md5: c8b6df84f07c1a98a0a181ebddaad401
-    size: 1784
+    md5: 311b2688f15ff585ac79b2d7681eb263
+    size: 2205
   params:
     params.yaml:
-      strands.SV_exp1.footprint:
+      submission.SV_exp1.footprint:
         footprint_file: data_repo/footprints/exp1_SV.fits
         surveys:
           targsrvys:
@@ -146,14 +146,14 @@ make-field-files@SV_exp1:
           cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
   outs:
   - path: obs/01-field-files/SV_exp1_fields.fits
-    md5: 79a18d790d22b22b1c8557e1b4ef1aaf
+    md5: 3374ef9f49a52d0ca34eea88558b1f85
     size: 8640
 create-empty-xmls@SV_exp2:
   cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/01-field-files/SV_exp2_fields.fits
     --outdir obs/SV_exp2/01-empty
   deps:
   - path: obs/01-field-files/SV_exp2_fields.fits
-    md5: 56bf567a7a4460ed07503e5d1b5cb926
+    md5: f07d34a9efe0e0ff35f126b1d3eece9a
     size: 8640
   - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
     md5: 5992298af881b7810b6fd344f64e2d8b
@@ -168,22 +168,22 @@ create-empty-xmls@shared:
     --outdir obs/shared/01-empty
   deps:
   - path: obs/01-field-files/shared_20AT1_fields.fits
-    md5: e81b8f263ea197ca3b2f8d0619138163
-    size: 20160
+    md5: bb6e00d20b234aa29f667bb653009185
+    size: 46080
   - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
     md5: 5992298af881b7810b6fd344f64e2d8b
     size: 10508
   outs:
   - path: obs/shared/01-empty
-    md5: 331d00bb5279c5299229a76dd7429e76.dir
-    size: 3224204
+    md5: c7b51a7bc2d2bd167a9fa9c2bc333f1d.dir
+    size: 3246002
     nfiles: 173
 create-empty-xmls@pointed:
   cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/01-field-files/pointed_20AT1_fields.fits
     --outdir obs/pointed/01-empty
   deps:
   - path: obs/01-field-files/pointed_20AT1_fields.fits
-    md5: 31e8947f6285fa21ef7bf87c4baed7cf
+    md5: c2ec15b19ddb16fd2197853ddd3f4dc6
     size: 11520
   - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
     md5: 5992298af881b7810b6fd344f64e2d8b
@@ -198,7 +198,7 @@ create-empty-xmls@SV_exp1:
     --outdir obs/SV_exp1/01-empty
   deps:
   - path: obs/01-field-files/SV_exp1_fields.fits
-    md5: 79a18d790d22b22b1c8557e1b4ef1aaf
+    md5: 3374ef9f49a52d0ca34eea88558b1f85
     size: 8640
   - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
     md5: 5992298af881b7810b6fd344f64e2d8b
@@ -216,16 +216,16 @@ add-targets@shared:
     md5: b0c869426efba1d4568d9871acd17f8c
     size: 494179200
   - path: obs/shared/01-empty
-    md5: 331d00bb5279c5299229a76dd7429e76.dir
-    size: 3224204
+    md5: c7b51a7bc2d2bd167a9fa9c2bc333f1d.dir
+    size: 3246002
     nfiles: 173
   - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
-    md5: 63da2ef5d7508006228f82759747705e
-    size: 7078
+    md5: bf8ca5b278e80d8ff6d9ddac88350812
+    size: 7040
   outs:
   - path: obs/shared/02-targets
-    md5: eb7eaa8cd3826c4ac18ed133fd52f550.dir
-    size: 3224204
+    md5: 1d8ad63d4f35de567d52572c64f384dc.dir
+    size: 165062781
     nfiles: 173
 add-targets@pointed:
   cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --outdir obs/pointed/02-targets
@@ -258,8 +258,8 @@ add-targets@SV_exp1:
     size: 186275
     nfiles: 10
   - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
-    md5: e60c55ff82a29f5b76c87f527f48d1cf
-    size: 7028
+    md5: bf8ca5b278e80d8ff6d9ddac88350812
+    size: 7040
   outs:
   - path: obs/SV_exp1/02-targets
     md5: 6f67a44a63cf20724cda9ab9a12493b9.dir
@@ -277,8 +277,8 @@ add-targets@SV_exp2:
     size: 37250
     nfiles: 2
   - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
-    md5: 63da2ef5d7508006228f82759747705e
-    size: 7078
+    md5: bf8ca5b278e80d8ff6d9ddac88350812
+    size: 7040
   outs:
   - path: obs/SV_exp2/02-targets
     md5: 45ee09e767f0abf1dbb54cca9b101b8d.dir
@@ -299,3 +299,68 @@ clean-xmls@SV_exp1:
     md5: 72d522707c1c43c2eac2ea3fa567e2f6.dir
     size: 17078480
     nfiles: 10
+clean-xmls@SV_exp2:
+  cmd: swg-workflow/clean_xml_targets.py --outdir obs/SV_exp2/03-cleaned obs/SV_exp2/02-targets/*
+  deps:
+  - path: obs/SV_exp2/02-targets
+    md5: 45ee09e767f0abf1dbb54cca9b101b8d.dir
+    size: 4066495
+    nfiles: 2
+  - path: swg-workflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/SV_exp2/03-cleaned
+    md5: c1acbafcb69f2c0dbe27a3bb31826c4c.dir
+    size: 4065161
+    nfiles: 2
+add-guide-and-calib-stars@SV_exp2:
+  cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir
+    obs/SV_exp2/04-guide-and-calib-stars obs/SV_exp2/03-cleaned/*
+  deps:
+  - path: obs/SV_exp2/03-cleaned
+    md5: c1acbafcb69f2c0dbe27a3bb31826c4c.dir
+    size: 4065161
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+    md5: 3a45d8c278aae0cdbaa9dec7169cd62a
+    size: 6750
+  outs:
+  - path: obs/SV_exp2/04-guide-and-calib-stars
+    md5: bb0de292efc9d934d39e1782c986881a.dir
+    size: 4361572
+    nfiles: 6
+clean-xmls@shared:
+  cmd: swg-workflow/clean_xml_targets.py --outdir obs/shared/03-cleaned obs/shared/02-targets/*
+  deps:
+  - path: obs/shared/02-targets
+    md5: 1d8ad63d4f35de567d52572c64f384dc.dir
+    size: 165062781
+    nfiles: 173
+  - path: swg-workflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/shared/03-cleaned
+    md5: a9347bf5454ac647e974fdc2394955b1.dir
+    size: 164947390
+    nfiles: 173
+add-targets@WQ:
+  cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --outdir obs/shared/02-targets-WQ
+    catalogues/WQ_2021A2.fits obs/shared/01-empty/*
+  deps:
+  - path: catalogues/WQ_2021A2.fits
+    md5: d3292197485e14857443e6ff4402602a
+    size: 4109760
+  - path: obs/shared/01-empty
+    md5: c7b51a7bc2d2bd167a9fa9c2bc333f1d.dir
+    size: 3246002
+    nfiles: 173
+  - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+    md5: bf8ca5b278e80d8ff6d9ddac88350812
+    size: 7040
+  outs:
+  - path: obs/shared/02-targets-WQ
+    md5: 39414e0972f0717b03abf8f9b67ac800.dir
+    size: 3246002
+    nfiles: 173

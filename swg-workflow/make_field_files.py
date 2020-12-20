@@ -21,25 +21,25 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Makes fits files of fields from footprints.')
 
-    parser.add_argument('strand',
+    parser.add_argument('submission',
                         help="""Which top level object in params.yaml to 
                         process.""")
 
     args = parser.parse_args()
 
-    assert args.strand in params['strands'], \
-        f"Didnt find {args.strand} in {params_file}"
+    assert args.submission in params['submission'], \
+        f"Didnt find {args.submission} in {params_file}"
 
 
     mos_field_template = params['field_template']
 
-    output_field_file = params['strands'][args.strand]['field_file']
+    output_field_file = params['submission'][args.submission]['field_file']
 
     output_directory = os.path.dirname(output_field_file)
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
 
-    task = params['strands'][args.strand]['footprint']
+    task = params['submission'][args.submission]['footprint']
 
     # Reformat fits table into expected form
     field_table = Table.read(task['footprint_file'])
@@ -54,7 +54,6 @@ if __name__ == '__main__':
     per_survey_tables = []
     for targsrvy, max_fibres in zip(surveys['targsrvys'], surveys[
         'max_fibres']):
-        print(targsrvy)
         field_table['TARGSRVY'] = targsrvy
         field_table['MAX_FIBRES'] = max_fibres
         per_survey_tables += [copy.deepcopy(field_table)]
