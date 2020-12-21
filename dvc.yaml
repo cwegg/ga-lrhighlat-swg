@@ -3,12 +3,12 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: swg-workflow/make_field_files.py --output obs/${key}/fields.fits ${key}
+      cmd: swgworkflow/make_field_files.py --output obs/${key}/fields.fits ${key}
       params:
         - submission.${key}.footprint
       deps:
         - ${item.footprint.footprint_file}
-        - swg-workflow/make_field_files.py
+        - swgworkflow/make_field_files.py
       outs:
         - obs/${key}/fields.fits
   create-empty-xmls:
@@ -25,7 +25,7 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --catalogues ${item.catalogue_dir}/* --outdir obs/${key}/02-targets obs/${key}/01-empty/*
+      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues ${item.catalogue_dir}/*.fits --outdir obs/${key}/02-targets obs/${key}/01-empty/*
       deps:
         - obs/${key}/01-empty
         - ${item.catalogue_dir}
@@ -36,7 +36,7 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/03-guide-and-calib-stars obs/${key}/02-targets/*
+      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/03-guide-and-calib-stars obs/${key}/02-targets/*.xml
       deps:
         - obs/${key}/02-targets
         - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
@@ -46,23 +46,59 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: swg-workflow/clean_xml_targets.py --outdir obs/${key}/04-cleaned obs/${key}/03-guide-and-calib-stars/*
+      cmd: swgworkflow/clean_xml_targets.py --outdir obs/${key}/04-cleaned  obs/${key}/03-guide-and-calib-stars/*.xml
       deps:
         - obs/${key}/03-guide-and-calib-stars
-        - swg-workflow/clean_xml_targets.py
+        - swgworkflow/clean_xml_targets.py
       outs:
         - obs/${key}/04-cleaned
   configure:
     foreach:
       ${submission}
     do:
-      cmd: swg-workflow/configurefields.py --epoch ${item.configure_epoch} --sync --outdir obs/${key}/04-cleaned obs/${key}/04-guide-and-calib-stars/*.xml
+      cmd: swgworkflow/configurefields.py --epoch ${item.configure_epoch}  --sync --outdir obs/${key}/05-configured obs/${key}/04-cleaned/*.xml
       params:
-        - submission.${key}.epoch
+        - submission.${key}.configure_epoch
       deps:
         - obs/${key}/04-cleaned
-        - swg-workflow/configurefields.py
+        - swgworkflow/configurefields.py
         - /soft/configure/configure
       outs:
         - obs/${key}/05-configured
+  add-configured-to-catalogues:
+    foreach:
+      ${submission}
+    do:
+      cmd: swgworkflow/add_configured_to_catalogues.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-configured/  obs/${key}/05-configured/*.xml
+      deps:
+        - ${item.catalogue_dir}/*.fits
+        - swgworkflow/add_configured_to_catalogues.py
+        - obs/${key}/05-configured
+      outs:
+        - ${item.catalogue_dir}-configured
+  add-configured-to-external-source-lists:
+    foreach:
+      ${submission}
+    do:
+      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-external-configured/ ${item.external_cats}/*.fits
+      deps:
+        - ${item.catalogue_dir}-configured
+        - ${item.external_cats}
+        - swgworkflow/add_configured_to_source_lists.py
+        - ${item.catalogue_dir}-configured
+      outs:
+        - ${item.catalogue_dir}-external-configured
+  add-configured-to-internal-source-lists:
+    foreach:
+      ${submission}
+    do:
+      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-internal-configured/ ${item.internal_cats}/*.fits
+      deps:
+        - ${item.catalogue_dir}-configured
+        - ${item.internal_cats}
+        - swgworkflow/add_configured_to_catalogues.py
+        - ${item.catalogue_dir}-configured
+      outs:
+        - ${item.catalogue_dir}-internal-configured
+
 

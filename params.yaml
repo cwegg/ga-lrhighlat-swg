@@ -13,7 +13,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    catalogue_dir: 'catalogues/SV_exp1/'
+    catalogue_dir: 'catalogues/SV_exp1'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp1_SV'
     internal_cats: 'data_repo/internal_cats/exp1_SV'
@@ -31,7 +31,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    catalogue_dir: 'catalogues/SV_exp2/'
+    catalogue_dir: 'catalogues/SV_exp2'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV'
     internal_cats: 'data_repo/internal_cats/exp2_SV'
@@ -50,7 +50,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    catalogue_dir: 'catalogues/pointed/'
+    catalogue_dir: 'catalogues/pointed'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/pointed_2021A1'
     internal_cats: 'data_repo/internal_cats/pointed_2021A1'
@@ -69,7 +69,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es, WL@weave, WQ@weave'
-    catalogue_dir: 'catalogues/pointed/'
+    catalogue_dir: 'catalogues/shared'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/shared_2021A1'
     internal_cats: 'data_repo/internal_cats/shared_2021A1'
