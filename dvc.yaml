@@ -3,62 +3,64 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: swg-workflow/make_field_files.py ${key}
+      cmd: swg-workflow/make_field_files.py --output obs/${key}/fields.fits ${key}
       params:
         - submission.${key}.footprint
       deps:
         - ${item.footprint.footprint_file}
         - swg-workflow/make_field_files.py
       outs:
-        - ${item.field_file}
+        - obs/${key}/fields.fits
   create-empty-xmls:
     foreach:
       ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py ${item.field_file} --outdir obs/${key}/01-empty
+      cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/${key}/fields.fits --outdir obs/${key}/01-empty
       deps:
-        - ${item.field_file}
+        - obs/${key}/fields.fits
         - weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
       outs:
         - obs/${key}/01-empty
   add-targets:
     foreach:
-      ${catalogues}
-    do:
-      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --outdir obs/${item.submission}/${item.output} ${item.catalogue} obs/${item.submission}/${item.input}/*
-      deps:
-        - obs/${item.submission}/${item.input}
-        - ${item.catalogue}
-        - weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
-      outs:
-        - obs/${item.submission}/${item.output}
-  clean-xmls:
-    foreach:
       ${submission}
     do:
-      cmd: swg-workflow/clean_xml_targets.py --outdir obs/${key}/03-cleaned obs/${key}/02-targets/*
+      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --catalogues ${item.catalogue_dir}/* --outdir obs/${key}/02-targets obs/${key}/01-empty/*
       deps:
-        - obs/${key}/02-targets
-        - swg-workflow/clean_xml_targets.py
+        - obs/${key}/01-empty
+        - ${item.catalogue_dir}
+        - weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
       outs:
-        - obs/${key}/03-cleaned
+        - obs/${key}/02-targets
   add-guide-and-calib-stars:
     foreach:
       ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/04-guide-and-calib-stars obs/${key}/03-cleaned/*
+      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/03-guide-and-calib-stars obs/${key}/02-targets/*
       deps:
-        - obs/${key}/03-cleaned
+        - obs/${key}/02-targets
         - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
       outs:
-        - obs/${key}/04-guide-and-calib-stars
+        - obs/${key}/03-guide-and-calib-stars
+  clean-xmls:
+    foreach:
+      ${submission}
+    do:
+      cmd: swg-workflow/clean_xml_targets.py --outdir obs/${key}/04-cleaned obs/${key}/03-guide-and-calib-stars/*
+      deps:
+        - obs/${key}/03-guide-and-calib-stars
+        - swg-workflow/clean_xml_targets.py
+      outs:
+        - obs/${key}/04-cleaned
   configure:
     foreach:
       ${submission}
     do:
-      cmd: swg-workflow/configurefields.py --epoch 2021.5 --herts --sync --outdir obs/${key}/05-configured obs/${key}/04-guide-and-calib-stars/*.xml
+      cmd: swg-workflow/configurefields.py --epoch ${item.configure_epoch} --sync --outdir obs/${key}/04-cleaned obs/${key}/04-guide-and-calib-stars/*.xml
+      params:
+        - submission.${key}.epoch
       deps:
-        - obs/${key}/04-guide-and-calib-stars
+        - obs/${key}/04-cleaned
         - swg-workflow/configurefields.py
         - /soft/configure/configure
       outs:

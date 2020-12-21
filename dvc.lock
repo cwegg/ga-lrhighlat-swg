@@ -465,3 +465,22 @@ configure@shared:
     md5: ade7ab7a8b030c4f1d76ec4eb0cc8fe6.dir
     size: 190419063
     nfiles: 519
+configure@pointed:
+  cmd: swg-workflow/configurefields.py --epoch 2021.5 --herts --sync --outdir obs/pointed/05-configured
+    obs/pointed/04-guide-and-calib-stars/*.xml
+  deps:
+  - path: /soft/configure/configure
+    md5: e3339f7713a55e9a2b22034de0bddf02
+    size: 30224120
+  - path: obs/pointed/04-guide-and-calib-stars
+    md5: 4281a477889688eeb808631427daf41c.dir
+    size: 53212857
+    nfiles: 135
+  - path: swg-workflow/configurefields.py
+    md5: e667877ddca1a02a027e95538906cd62
+    size: 6468
+  outs:
+  - path: obs/pointed/05-configured
+    md5: b66eafcb91ca224deecec2af42c74066.dir
+    size: 54813620
+    nfiles: 135

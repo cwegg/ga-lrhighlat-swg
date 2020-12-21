@@ -2,7 +2,6 @@
 
 import yaml
 import argparse
-import os.path
 import os
 import copy
 import astropy.table
@@ -21,6 +20,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Makes fits files of fields from footprints.')
 
+    parser.add_argument('--output',
+                        help="""Where to place the output field file.""")
+
     parser.add_argument('submission',
                         help="""Which top level object in params.yaml to 
                         process.""")
@@ -33,7 +35,7 @@ if __name__ == '__main__':
 
     mos_field_template = params['field_template']
 
-    output_field_file = params['submission'][args.submission]['field_file']
+    output_field_file = args.output
 
     output_directory = os.path.dirname(output_field_file)
     if not os.path.isdir(output_directory):

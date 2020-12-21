@@ -13,7 +13,10 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    field_file: 'obs/01-field-files/SV_exp1_fields.fits'
+    catalogue_dir: 'catalogues/SV_exp1/'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/exp1_SV'
+    internal_cats: 'data_repo/internal_cats/exp1_SV'
 
   SV_exp2:
     footprint:
@@ -28,7 +31,11 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    field_file: 'obs/01-field-files/SV_exp2_fields.fits'
+    catalogue_dir: 'catalogues/SV_exp2/'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/exp2_SV'
+    internal_cats: 'data_repo/internal_cats/exp2_SV'
+
 
   pointed:
     footprint:
@@ -43,7 +50,11 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    field_file: 'obs/01-field-files/pointed_20AT1_fields.fits'
+    catalogue_dir: 'catalogues/pointed/'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/pointed_2021A1'
+    internal_cats: 'data_repo/internal_cats/pointed_2021A1'
+
 
   shared:
     footprint:
@@ -57,32 +68,8 @@ submission:
         trimester: '2020A1'
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
-        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    field_file: 'obs/01-field-files/shared_20AT1_fields.fits'
-
-catalogues:
-  SV_exp1:
-    catalogue: 'catalogues/cat_exp1_SV.fits'
-    submission: 'SV_exp1'
-    input: '01-empty'
-    output: '02-targets'
-  SV_exp2:
-    catalogue: 'catalogues/cat_exp2_SV.fits'
-    submission: 'SV_exp2'
-    input: '01-empty'
-    output: '02-targets'
-  pointed:
-    catalogue: 'catalogues/cat_pointed_2021A1.fits'
-    submission: 'pointed'
-    input: '01-empty'
-    output: '02-targets'
-  shared:
-    catalogue: 'catalogues/cat_shared_2021A1.fits'
-    submission: 'shared'
-    input: '02-targets-WQ'
-    output: '02-targets'
-  WQ:
-    catalogue: 'catalogues/WQ_2021A2.fits'
-    submission: 'shared'
-    input: '01-empty'
-    output: '02-targets-WQ'
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es, WL@weave, WQ@weave'
+    catalogue_dir: 'catalogues/pointed/'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/shared_2021A1'
+    internal_cats: 'data_repo/internal_cats/shared_2021A1'

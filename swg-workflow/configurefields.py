@@ -5,8 +5,17 @@ import argparse
 import logging
 import subprocess
 
+def _is_tool(name):
+    """Check whether `name` is on PATH and marked as executable."""
+    from shutil import which
+    return which(name) is not None
+
+def _run_command(command):
+    return subprocess.check_output(command, shell=True).decode("utf-8").strip()
+
+
 def configure_fields(xml_file_list, output_dir,
-                     sync=True, herts=False,
+                     sync=True, qsub=False,
                      configure_path='/soft/configure/configure',
                      overwrite=False, threads=8,
                      extra_configure_options='',
@@ -21,7 +30,7 @@ def configure_fields(xml_file_list, output_dir,
         A list of input OB XML files.
     output_dir : str
         Name of the directory which will contains the output XML files.
-    herts : bool, optional
+    qsub : bool, optional
         If running on the herts cluster submit the jobs to the queue.
     sync : bool, optional
         If running on the herts cluster wait until jobs finished before
@@ -80,10 +89,10 @@ def configure_fields(xml_file_list, output_dir,
         command += '--epoch {} '.format(epoch)
         command += '--threads {} '.format(threads)
         command += '--field {} '.format(os.path.abspath(xml_file))
-        command += '--output {}'.format(os.path.abspath(output_file))
+        command += '--output {} '.format(os.path.abspath(output_file))
         command += extra_configure_options
 
-        if herts:
+        if qsub:
             # Construct qsub command to submit job
             job_name = input_basename_wo_ext
             command = 'echo "{}" | qsub -l pmem=8gb -l '.format(command)
@@ -94,26 +103,25 @@ def configure_fields(xml_file_list, output_dir,
                                                  output_basename_wo_ext)
             command += '-N {} {} -'.format(job_name,extra_qsub_options)
             logging.info('Running command: {}'.format(command))
-            job_id = subprocess.check_output(command, shell=True).decode(
-                "utf-8").strip()
+            job_id = _run_command(command)
             job_id_list.append(job_id)
 
         else:
             logging.info('Running command: {}'.format(command))
-            os.system(command)
+            _run_command(command)
 
-    if sync and herts and len(job_id_list) > 0:
+    if sync and qsub and len(job_id_list) > 0:
         jobs_names = ':'.join(job_id_list)
-        command = 'echo "echo Done" | qsub  -W depend=afterany:{}'.format(jobs_names)
+        command = 'echo "echo Done" | qsub  -W depend=afterany:{} '.format(jobs_names)
+        command += '-o /dev/null -e /dev/null'
         logging.info('Running command: {}'.format(command))
         sync_job = subprocess.check_output(command, shell=True).decode(
             "utf-8").strip()
         command = 'qstat -f {} | grep job_state'.format(sync_job)
-        state = subprocess.check_output(command, shell=True).decode(
-            "utf-8").strip()
+        state = _run_command(command)
         while 'H' in state:
             time.sleep(10)
-            state = subprocess.check_output(command, shell=True).decode("utf-8") .strip()
+            state = _run_command(command)
 
     return output_file_list
 
@@ -134,11 +142,13 @@ if __name__ == '__main__':
                         help="""name of the directory which will containe the
                         output XML files""")
 
-    parser.add_argument('--epoch',
+    parser.add_argument('--epoch', default='2021.5',
                         help='Epoch of observation')
 
-    parser.add_argument('--herts', action='store_true',
-                        help='Submit jobs to herts cluster - you should '
+    parser.add_argument('--qsub', default='auto',
+                        choices=['auto', 'yes', 'no'],
+                        help='Submit jobs using qsub i.e. you are running on '
+                             'the qsub cluster - in which case you should '
                              'typically be running this script on the headnode')
 
     parser.add_argument('--sync', action='store_true',
@@ -160,9 +170,17 @@ if __name__ == '__main__':
         logging.info('Creating the output directory')
         os.makedirs(args.output_dir)
 
+    if args.qsub == 'auto':
+        qsub = _is_tool('qsub')
+    elif args.qsub == 'yes':
+        qsub = True
+    else:
+        qsub= False
+
+
     configure_fields(args.xml_file_list, args.output_dir,
                      epoch=args.epoch,
                      sync=args.sync,
-                     herts=args.herts,
+                     qsub=qsub,
                      configure_path=args.configure_path,
                      overwrite=args.overwrite)
