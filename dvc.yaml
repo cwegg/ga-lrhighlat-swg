@@ -71,7 +71,7 @@ stages:
     do:
       cmd: swgworkflow/add_configured_to_catalogues.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-configured/  obs/${key}/05-configured/*.xml
       deps:
-        - ${item.catalogue_dir}/*.fits
+        - ${item.catalogue_dir}
         - swgworkflow/add_configured_to_catalogues.py
         - obs/${key}/05-configured
       outs:
@@ -80,24 +80,22 @@ stages:
     foreach:
       ${submission}
     do:
-      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-external-configured/ ${item.external_cats}/*.fits
+      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}-configured/*.fits --outdir ${item.catalogue_dir}-external-configured/ ${item.external_cats}/*.fits
       deps:
         - ${item.catalogue_dir}-configured
         - ${item.external_cats}
         - swgworkflow/add_configured_to_source_lists.py
-        - ${item.catalogue_dir}-configured
       outs:
         - ${item.catalogue_dir}-external-configured
   add-configured-to-internal-source-lists:
     foreach:
       ${submission}
     do:
-      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-internal-configured/ ${item.internal_cats}/*.fits
+      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}-configured/*.fits --outdir ${item.catalogue_dir}-internal-configured/ ${item.internal_cats}/*.fits
       deps:
         - ${item.catalogue_dir}-configured
         - ${item.internal_cats}
         - swgworkflow/add_configured_to_catalogues.py
-        - ${item.catalogue_dir}-configured
       outs:
         - ${item.catalogue_dir}-internal-configured
 

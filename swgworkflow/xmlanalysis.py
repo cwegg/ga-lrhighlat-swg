@@ -3,6 +3,7 @@ import numpy as np
 import xml.etree.ElementTree as et
 import matplotlib.pyplot as plt
 import glob
+import logging
 
 PLATE_A_FIBRES, PLATE_B_FIBRES = 964, 948
 
@@ -57,7 +58,8 @@ def parse_configure_xml_targets(xml_file, attributes=('targsrvy', 'targra', 'tar
     # automatically selected by configure or came from a sky fibre position in an input catalogue) since they
     # really shouldn't be assigned to particular survey...
     if 'targsrvy' in attributes:
-        df.loc[~(df['targsrvy'].isnull() | (df['targsrvy'] == '')) & (df['targuse'] == 'S'), 'targsrvy'] = 'SKY'
+        #df.loc[~(df['targsrvy'].isnull() | (df['targsrvy'] == '')) & (df[
+        # 'targuse'] == 'S'), 'targsrvy'] = 'SKY'
         df.loc[(df['targsrvy'].isnull() | (df['targsrvy'] == '')) & (df['targuse'] == 'S'), 'targsrvy'] = 'AUTOSKY'
 
     df.loc[df['targprio'].isnull(), 'targprio'] = -1  # Given to autosky targets to avoid pandas errors later
@@ -99,6 +101,8 @@ def parse_configure_xml_summary(xml_file: str) -> pd.DataFrame:
     xtree = et.parse(xml_file)
     xroot = xtree.getroot()
 
+    row['progtemp'] = xroot.find('observation').get('progtemp')
+    row['obstemp'] = xroot.find('observation').get('obstemp')
     row['field_name'] = xroot.find('observation').get('name')
     row['ra'] = float(xroot.find('observation/fields/field').get('RA_d'))
     row['dec'] = float(xroot.find('observation/fields/field').get('Dec_d'))
@@ -175,7 +179,7 @@ def xml_field_plots(xml_file_pattern, filename):
                 print(f"An exception occurred reading {xml_file} : {e}")
 
 
-def parse_xmls(files, halt_on_error=False):
+def parse_configured_xmls(files):
     summarys = []
     targets = []
     if isinstance(files, str):
@@ -188,9 +192,7 @@ def parse_xmls(files, halt_on_error=False):
             summarys.append(parse_configure_xml_summary(file))
             targets.append(parse_configure_xml_targets(file))
         except:
-            print(f'Problem reading {file}')
-            if halt_on_error:
-                raise
+            logging.info(f'Problem reading {file}')
     return pd.concat(summarys), pd.concat(targets)
 
 
