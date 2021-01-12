@@ -109,7 +109,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: '"--stop_temp 0.1 --start_temp 0.1 "'
+    configure_options: '"--stop_temp 0.1 --start_temp 50"'
     catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_onlyprio8'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV_DR3'
