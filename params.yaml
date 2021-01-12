@@ -20,7 +20,7 @@ submission:
     external_cats: 'data_repo/external_cats/exp1_SV_DR3'
     internal_cats: 'data_repo/internal_cats/exp1_SV_DR3'
 
-  SV_M92:
+  SV_M92_center:
     footprint:
       footprint_file: 'data_repo/footprints/M92_SV.fits'
       surveys:
@@ -33,10 +33,29 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: '"--stop_temp 1"'
-    catalogue_dir: 'catalogues/SV_M92'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_M92_center'
     configure_epoch: '2021.5'
-    external_cats: 'data_repo/external_cats/M92_SV'
+    external_cats: 'data_repo/external_cats/M92_center'
+    internal_cats: 'data_repo/internal_cats/M92_SV'
+
+  SV_M92_outside:
+    footprint:
+      footprint_file: 'data_repo/footprints/M92_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_M92_outside'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/M92_outside'
     internal_cats: 'data_repo/internal_cats/M92_SV'
 
   SV_exp2_DR3_dwarfsonly:
@@ -90,7 +109,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
+    configure_options: '"--stop_temp 0.1 --start_temp 0.1 "'
     catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_onlyprio8'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV_DR3'
