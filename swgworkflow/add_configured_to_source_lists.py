@@ -28,18 +28,26 @@ def _match_masked_columns(col1, col2, mask1=None, mask2=None):
     return col1_idx, col2_idx
 
 
+def _unmask_column(table, column):
+    if hasattr(table[column], 'mask'):
+        table[column].fill_value = 0
+        unmasked_column = table[column].filled()
+        mask = table[column].mask
+    else:
+        unmasked_column = table[column]
+        mask = None
+    return unmasked_column, mask
+
+
 def _match_source_to_target_lists(target_list, target_column_name, source_list,
                                   source_column_name, source_list_mask=None):
-    if hasattr(target_list[target_column_name], 'mask'):
-        target_list[target_column_name].fill_value = 0
-        target_column = target_list[target_column_name].filled()
-        target_mask = target_list[target_column_name].mask
-    else:
-        target_column = target_list[target_column_name]
-        target_mask = None
+
+    target_column, target_mask = _unmask_column(target_list, target_column_name)
+    source_column, source_mask = _unmask_column(source_list, source_column_name)
+
     target_ind, source_ind = _match_masked_columns(
-        col1=target_column, col2=source_list[source_column_name],
-        mask1=target_mask, mask2=source_list_mask)
+        col1=target_column, col2=source_column,
+        mask1=target_mask, mask2=source_mask)
     return target_ind, source_ind
 
 

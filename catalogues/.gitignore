@@ -1,3 +1,15 @@
 /SV_exp1-configured
 /SV_exp1-external-configured
 /SV_exp1-internal-configured
+/SV_exp2_downsample0.1-external-configured
+/SV_exp2_downsample0.5-external-configured
+/SV_exp2_downsample0.3-external-configured
+/SV_exp2_downsample0.7-external-configured
+/SV_exp2_downsample0.5-configured
+/SV_exp2_downsample0.3-configured
+/SV_exp2_downsample0.7-configured
+/SV_exp2_downsample0.1-configured
+/SV_exp2_DR3_dwarfonly-configured
+/SV_exp2_DR3_dwarfonly-external-configured
+/SV_exp2_DR3_dwarfonly_downsample-configured
+/SV_exp2_DR3_dwarfonly_downsample-external-configured

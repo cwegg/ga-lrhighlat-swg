@@ -47,18 +47,15 @@ def add_configured_to_catalogues(xml_file_list, target_cat, output_dir,
     df = xml_targets.value_counts(subset=['targsrvy', 'targid', 'progtemp',
                                           'obstemp', 'assigned']).to_frame()
     df = df.unstack(level=[4], fill_value=0)
-    print(df)
     df.columns = df.columns.to_flat_index()
     df.reset_index(inplace=True)
     df['CONFIGURED'] = df[(0, True)] + df[(0, False)]
     df['ASSIGNED'] = df[(0, True)]
-    print(df)
     df.drop(columns=[(0, False)], inplace=True)
     df.drop(columns=[(0, True)], inplace=True)
     df.rename(columns={"targsrvy":"TARGSRVY", "targid":"TARGID",
                        "progtemp":"PROGTEMP", "obstemp": "OBSTEMP"},
               inplace=True)
-    print(df)
     assigned_table = Table.from_pandas(df)
     # Assigned table should now have the columns TARGSRVY, TARGSRVY,
     # PROGTEMP, OBSTEMP (to join to the catalogue uniquely on) together with
@@ -80,6 +77,19 @@ def add_configured_to_catalogues(xml_file_list, target_cat, output_dir,
     catalogue_appended['ASSIGNED'] = catalogue_appended['ASSIGNED'].filled()
     catalogue_appended['CONFIGURED'].fill_value = 0
     catalogue_appended['CONFIGURED'] = catalogue_appended['CONFIGURED'].filled()
+
+    name_df = \
+    xml_targets.groupby(['targsrvy', 'targid', 'progtemp', 'obstemp'])[
+        'field_name'].apply('|'.join).reset_index()
+    name_df.rename(columns={"targsrvy":"TARGSRVY", "targid":"TARGID",
+                       "progtemp":"PROGTEMP", "obstemp": "OBSTEMP",
+                            "field_name": "FIELD_NAME"},
+              inplace=True)
+    name_table = Table.from_pandas(name_df)
+    catalogue_appended = astropy.table.join(catalogue_appended, name_table,
+                                            join_type='left')
+    assert len(catalogue_appended) == len(catalog_targets), \
+        'Size mismatch when cross-matching between catalogues'
 
     # Finally write to fits file
     catalogue_appended.write(output_file)

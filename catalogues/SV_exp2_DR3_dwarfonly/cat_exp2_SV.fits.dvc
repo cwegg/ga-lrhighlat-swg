@@ -1,0 +1,4 @@
+outs:
+- md5: f7918359f89ad73c0bf9aab07df91d7a
+  size: 42344640
+  path: cat_exp2_SV.fits
