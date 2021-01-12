@@ -252,8 +252,8 @@ add-targets@SV_exp1:
     catalogues/SV_exp1/*.fits --outdir obs/SV_exp1/02-targets obs/SV_exp1/01-empty/*
   deps:
   - path: catalogues/SV_exp1
-    md5: d0d78b181bd25da8708145ed04c6286c.dir
-    size: 67916266
+    md5: 435d84dd4624729d0e6c2154ec3f7143.dir
+    size: 65736106
     nfiles: 3
   - path: obs/SV_exp1/01-empty
     md5: 5ad18573dc980216e443010665babadf.dir
@@ -264,8 +264,8 @@ add-targets@SV_exp1:
     size: 7229
   outs:
   - path: obs/SV_exp1/02-targets
-    md5: 6f67a44a63cf20724cda9ab9a12493b9.dir
-    size: 17085150
+    md5: 6f0d481f9f994553bdbccf90b5573b87.dir
+    size: 5025939
     nfiles: 10
 add-targets@SV_exp2:
   cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py --outdir obs/SV_exp2/02-targets
@@ -290,16 +290,16 @@ clean-xmls@SV_exp1:
   cmd: swgworkflow/clean_xml_targets.py --outdir obs/SV_exp1/04-cleaned  obs/SV_exp1/03-guide-and-calib-stars/*.xml
   deps:
   - path: obs/SV_exp1/03-guide-and-calib-stars
-    md5: 25f95c37848532ceb8708930143d9257.dir
-    size: 18378839
+    md5: ce0cc3eb152ca8b6220d30c1c22e1116.dir
+    size: 6308397
     nfiles: 30
   - path: swgworkflow/clean_xml_targets.py
     md5: 72f66d86eb41935333f736d806d76c10
     size: 3285
   outs:
   - path: obs/SV_exp1/04-cleaned
-    md5: 3562620d7a3016c635383b1667c02438.dir
-    size: 17203123
+    md5: e22d8940eec3bb70d0f2a2fa96f77fc6.dir
+    size: 5143912
     nfiles: 10
 clean-xmls@SV_exp2:
   cmd: swg-workflow/clean_xml_targets.py --outdir obs/SV_exp2/03-cleaned obs/SV_exp2/02-targets/*
@@ -371,16 +371,16 @@ add-guide-and-calib-stars@SV_exp1:
     obs/SV_exp1/03-guide-and-calib-stars obs/SV_exp1/02-targets/*.xml
   deps:
   - path: obs/SV_exp1/02-targets
-    md5: 6f67a44a63cf20724cda9ab9a12493b9.dir
-    size: 17085150
+    md5: 6f0d481f9f994553bdbccf90b5573b87.dir
+    size: 5025939
     nfiles: 10
   - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
     md5: 3a45d8c278aae0cdbaa9dec7169cd62a
     size: 6750
   outs:
   - path: obs/SV_exp1/03-guide-and-calib-stars
-    md5: 25f95c37848532ceb8708930143d9257.dir
-    size: 18378839
+    md5: ce0cc3eb152ca8b6220d30c1c22e1116.dir
+    size: 6308397
     nfiles: 30
 clean-xmls@pointed:
   cmd: swgworkflow/clean_xml_targets.py --outdir obs/pointed/04-cleaned  obs/pointed/03-guide-and-calib-stars/*.xml
@@ -430,26 +430,27 @@ add-guide-and-calib-stars@shared:
     size: 192068166
     nfiles: 519
 configure@SV_exp1:
-  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --outdir obs/SV_exp1/05-configured
-    obs/SV_exp1/04-cleaned/*.xml
+  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --extra_configure_options
+    submission.SV_exp1.configure_options --outdir obs/SV_exp1/05-configured obs/SV_exp1/04-cleaned/*.xml
   deps:
   - path: /soft/configure/configure
     md5: e3339f7713a55e9a2b22034de0bddf02
     size: 30224120
   - path: obs/SV_exp1/04-cleaned
-    md5: 3562620d7a3016c635383b1667c02438.dir
-    size: 17203123
+    md5: e22d8940eec3bb70d0f2a2fa96f77fc6.dir
+    size: 5143912
     nfiles: 10
   - path: swgworkflow/configurefields.py
-    md5: a7119ddadac4c7c4d7088b5cf2f0f327
-    size: 6888
+    md5: 6a56f4ae6643fc8dcc4de1703f04b30e
+    size: 7862
   params:
     params.yaml:
       submission.SV_exp1.configure_epoch: '2021.5'
+      submission.SV_exp1.configure_options: ''
   outs:
   - path: obs/SV_exp1/05-configured
-    md5: 2316b1dc95638d581255b4f3d3814674.dir
-    size: 19598582
+    md5: 07ad9afc350b1769cb5bc8a039880497.dir
+    size: 6078830
     nfiles: 30
 configure@shared:
   cmd: swg-workflow/configurefields.py --epoch 2021.5 --herts --sync --outdir obs/shared/05-configured
@@ -494,60 +495,62 @@ add-configured-to-catalogues@SV_exp1:
     --outdir catalogues/SV_exp1-configured/ obs/SV_exp1/05-configured/*.xml
   deps:
   - path: catalogues/SV_exp1
-    md5: d0d78b181bd25da8708145ed04c6286c.dir
-    size: 67916266
+    md5: 435d84dd4624729d0e6c2154ec3f7143.dir
+    size: 65736106
     nfiles: 3
   - path: obs/SV_exp1/05-configured
-    md5: 2316b1dc95638d581255b4f3d3814674.dir
-    size: 19598582
+    md5: 07ad9afc350b1769cb5bc8a039880497.dir
+    size: 6078830
     nfiles: 30
   - path: swgworkflow/add_configured_to_catalogues.py
     md5: 97ce3d2ab98cadd078ba8095b769ca31
     size: 5759
   outs:
   - path: catalogues/SV_exp1-configured
-    md5: 84bc717c5810b412126dfc44f0394bfb.dir
-    size: 69543360
+    md5: 5e197e0a4c539ad08761ed4e5eefa17f.dir
+    size: 67308480
     nfiles: 1
 add-configured-to-external-source-lists@SV_exp1:
   cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_exp1-configured/*.fits
-    --outdir catalogues/SV_exp1-external-configured/ data_repo/external_cats/exp1_SV/*.fits
+    --suffix=-configured-SV_exp1 --outdir catalogues/SV_exp1-external-configured/
+    data_repo/external_cats/exp1_SV_DR3/*.fits
   deps:
   - path: catalogues/SV_exp1-configured
-    md5: 84bc717c5810b412126dfc44f0394bfb.dir
-    size: 69543360
+    md5: 5e197e0a4c539ad08761ed4e5eefa17f.dir
+    size: 67308480
     nfiles: 1
-  - path: data_repo/external_cats/exp1_SV
-    md5: e5a70f55aa9490efc0b72f851c214ec5.dir
-    size: 3972176
+  - path: data_repo/external_cats/exp1_SV_DR3
+    md5: 83c11c2f3806b542a095af721d342c74.dir
+    size: 5412197
     nfiles: 13
   - path: swgworkflow/add_configured_to_source_lists.py
-    md5: 109dbf22bc6158e1af46eeb7e15a0cdc
-    size: 7041
+    md5: f50754caf28cf7b8e5e2ef357729b4b2
+    size: 7131
   outs:
   - path: catalogues/SV_exp1-external-configured
-    md5: 73ed8e62ecda27e647891ca369b7789e.dir
-    size: 11260800
+    md5: 249919ad125a7682dee8fe1557daddf4.dir
+    size: 15215040
     nfiles: 6
 add-configured-to-internal-source-lists@SV_exp1:
   cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_exp1-configured/*.fits
-    --outdir catalogues/SV_exp1-internal-configured/ data_repo/internal_cats/exp1_SV/*.fits
+    --suffix=-configured-SV_exp1 --outdir catalogues/SV_exp1-internal-configured/
+    data_repo/internal_cats/exp1_SV_DR3/*.fits
   deps:
   - path: catalogues/SV_exp1-configured
-    md5: d31a7844b6ac569355ed72afe782c7e8.dir
-    size: 68751360
+    md5: 5e197e0a4c539ad08761ed4e5eefa17f.dir
+    size: 67308480
     nfiles: 1
-  - path: data_repo/internal_cats/exp1_SV
-    md5: 8c9687efa6a6858efcef9dba29b443d2.dir
-    size: 9213681
+  - path: data_repo/internal_cats/exp1_SV_DR3
+    md5: 0857ec9820c9e9f78c4e7a48bc14e9ae.dir
+    size: 7995441
     nfiles: 11
   - path: swgworkflow/add_configured_to_catalogues.py
-    md5: 458c82d9ce3fb4ccdaebd87cab797711
-    size: 5130
+    md5: 97ce3d2ab98cadd078ba8095b769ca31
+    size: 5759
   outs:
   - path: catalogues/SV_exp1-internal-configured
-    md5: 570a491b63ecd55b7f9a3966d4a51486.dir
-    size: 13553280
+    md5: 0522f26ce23f1bc8b8895111ace74534.dir
+    size: 12196800
     nfiles: 5
 downsample_SV_exp2_0p3:
   cmd: mkdir -p catalogues/SV_exp2_downsample0.3 && swgworkflow/downsample_SVexp2.py
@@ -1580,3 +1583,686 @@ add-configured-to-external-source-lists@SV_exp2_DR3_dwarfsonly_downsample:
     md5: b2daf64acd1ca4753e0ae01f5e8394ba.dir
     size: 2983680
     nfiles: 2
+downsample_SV_exp2_DR3_onlyprio10:
+  cmd: mkdir -p catalogues/SV_exp2_DR3_dwarfonly_onlyprio10 && swgworkflow/downsample_SVexp2.py
+    --input_catalogue catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits --output_catalogue
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio10/cat_exp2_SV.fits --downsample_low_prio
+    0.5 --only_prio 10 --overwrite
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+    md5: f7918359f89ad73c0bf9aab07df91d7a
+    size: 42344640
+  - path: swgworkflow/downsample_SVexp2.py
+    md5: 7c4e50b19dd9cd7c037d434a403c0cf4
+    size: 3657
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10/cat_exp2_SV.fits
+    md5: 6bf18018d4494322ac72a20b2a7be8d2
+    size: 11027520
+make-field-files@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: swgworkflow/make_field_files.py --output obs/SV_exp2_DR3_dwarfsonly_onlyprio10/fields.fits
+    SV_exp2_DR3_dwarfsonly_onlyprio10
+  deps:
+  - path: data_repo/footprints/exp2_SV.fits
+    md5: e8be0825b25859997f9b4042b7184669
+    size: 8640
+  - path: swgworkflow/make_field_files.py
+    md5: ee1213a482bd06ea6c26e76bf544f8e5
+    size: 2261
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio10.footprint:
+        footprint_file: data_repo/footprints/exp2_SV.fits
+        surveys:
+          targsrvys:
+          - WS2021A1-029
+          max_fibres:
+          - 1000
+        progtemp: 11331.1+
+        obstemp: DACEB
+        keywords:
+          trimester: 2020A1
+          author: chriswegg@gmail.com
+          report_verbosity: 1
+          cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/fields.fits
+    md5: 981d4d194ce7a3ecd9be7c468295435c
+    size: 8640
+create-empty-xmls@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/SV_exp2_DR3_dwarfsonly_onlyprio10/fields.fits
+    --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio10/01-empty
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/fields.fits
+    md5: 981d4d194ce7a3ecd9be7c468295435c
+    size: 8640
+  - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+    md5: 5992298af881b7810b6fd344f64e2d8b
+    size: 10508
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+add-targets@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio10/*.fits --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio10/02-targets
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio10/01-empty/*
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10
+    md5: 3bb4adc85398c39469740ca8d89d6541.dir
+    size: 11027538
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+    md5: 32b352d579d2abf23f03f96d34fe3a0c
+    size: 7229
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/02-targets
+    md5: 7570954e59712a326882205726f8f1db.dir
+    size: 329886
+    nfiles: 2
+add-guide-and-calib-stars@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio10/03-guide-and-calib-stars obs/SV_exp2_DR3_dwarfsonly_onlyprio10/02-targets/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/02-targets
+    md5: 7570954e59712a326882205726f8f1db.dir
+    size: 329886
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+    md5: 3a45d8c278aae0cdbaa9dec7169cd62a
+    size: 6750
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/03-guide-and-calib-stars
+    md5: 70de8f520b8cc62d5ca1ca56f989a8b7.dir
+    size: 621207
+    nfiles: 6
+clean-xmls@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: swgworkflow/clean_xml_targets.py --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio10/04-cleaned  obs/SV_exp2_DR3_dwarfsonly_onlyprio10/03-guide-and-calib-stars/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/03-guide-and-calib-stars
+    md5: 70de8f520b8cc62d5ca1ca56f989a8b7.dir
+    size: 621207
+    nfiles: 6
+  - path: swgworkflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/04-cleaned
+    md5: 7a802e76e21bda19916d3ff460a771ac.dir
+    size: 357457
+    nfiles: 2
+configure@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio10/05-configured
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio10/04-cleaned/*.xml
+  deps:
+  - path: /soft/configure/configure
+    md5: e3339f7713a55e9a2b22034de0bddf02
+    size: 30224120
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/04-cleaned
+    md5: 7a802e76e21bda19916d3ff460a771ac.dir
+    size: 357457
+    nfiles: 2
+  - path: swgworkflow/configurefields.py
+    md5: a7119ddadac4c7c4d7088b5cf2f0f327
+    size: 6888
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio10.configure_epoch: '2021.5'
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/05-configured
+    md5: fb4dc32966e9b85b7c08ef7e12abb0f6.dir
+    size: 425201
+    nfiles: 6
+add-configured-to-catalogues@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: swgworkflow/add_configured_to_catalogues.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio10/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-configured/ obs/SV_exp2_DR3_dwarfsonly_onlyprio10/05-configured/*.xml
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10
+    md5: 3bb4adc85398c39469740ca8d89d6541.dir
+    size: 11027538
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio10/05-configured
+    md5: fb4dc32966e9b85b7c08ef7e12abb0f6.dir
+    size: 425201
+    nfiles: 6
+  - path: swgworkflow/add_configured_to_catalogues.py
+    md5: 97ce3d2ab98cadd078ba8095b769ca31
+    size: 5759
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-configured
+    md5: df6538fbc39eaa7595289e5d273a4c24.dir
+    size: 11226240
+    nfiles: 1
+add-configured-to-external-source-lists@SV_exp2_DR3_dwarfsonly_onlyprio10:
+  cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-configured/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-external-configured/ data_repo/external_cats/exp2_SV_DR3/*.fits
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-configured
+    md5: df6538fbc39eaa7595289e5d273a4c24.dir
+    size: 11226240
+    nfiles: 1
+  - path: data_repo/external_cats/exp2_SV_DR3
+    md5: 72ee784bbc1c165d91c4c8522d627775.dir
+    size: 1048421
+    nfiles: 4
+  - path: swgworkflow/add_configured_to_source_lists.py
+    md5: 109dbf22bc6158e1af46eeb7e15a0cdc
+    size: 7041
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio10-external-configured
+    md5: c57455703bdd38dee44b4543f3658dc3.dir
+    size: 2983680
+    nfiles: 2
+make-field-files@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: swgworkflow/make_field_files.py --output obs/SV_exp2_DR3_dwarfsonly_onlyprio9/fields.fits
+    SV_exp2_DR3_dwarfsonly_onlyprio9
+  deps:
+  - path: data_repo/footprints/exp2_SV.fits
+    md5: e8be0825b25859997f9b4042b7184669
+    size: 8640
+  - path: swgworkflow/make_field_files.py
+    md5: ee1213a482bd06ea6c26e76bf544f8e5
+    size: 2261
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio9.footprint:
+        footprint_file: data_repo/footprints/exp2_SV.fits
+        surveys:
+          targsrvys:
+          - WS2021A1-029
+          max_fibres:
+          - 1000
+        progtemp: 11331.1+
+        obstemp: DACEB
+        keywords:
+          trimester: 2020A1
+          author: chriswegg@gmail.com
+          report_verbosity: 1
+          cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/fields.fits
+    md5: ef543960cd3ccbed5159b51545a245ef
+    size: 8640
+create-empty-xmls@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/SV_exp2_DR3_dwarfsonly_onlyprio9/fields.fits
+    --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio9/01-empty
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/fields.fits
+    md5: ef543960cd3ccbed5159b51545a245ef
+    size: 8640
+  - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+    md5: 5992298af881b7810b6fd344f64e2d8b
+    size: 10508
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+downsample_SV_exp2_DR3_onlyprio9:
+  cmd: mkdir -p catalogues/SV_exp2_DR3_dwarfonly_onlyprio9 && swgworkflow/downsample_SVexp2.py
+    --input_catalogue catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits --output_catalogue
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio9/cat_exp2_SV.fits --downsample_low_prio
+    0.5 --only_prio 9 --overwrite
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+    md5: f7918359f89ad73c0bf9aab07df91d7a
+    size: 42344640
+  - path: swgworkflow/downsample_SVexp2.py
+    md5: 7c4e50b19dd9cd7c037d434a403c0cf4
+    size: 3657
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9/cat_exp2_SV.fits
+    md5: 2bee8b27bbf27f29481146ade3b5e96b
+    size: 11295360
+add-targets@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio9/*.fits --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio9/02-targets
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio9/01-empty/*
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9
+    md5: a1358563b01486cc9e76818c316070a2.dir
+    size: 11295378
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+    md5: 32b352d579d2abf23f03f96d34fe3a0c
+    size: 7229
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/02-targets
+    md5: 262d5b7fdf041306b49cedca50b0f59b.dir
+    size: 443356
+    nfiles: 2
+add-guide-and-calib-stars@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio9/03-guide-and-calib-stars obs/SV_exp2_DR3_dwarfsonly_onlyprio9/02-targets/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/02-targets
+    md5: 262d5b7fdf041306b49cedca50b0f59b.dir
+    size: 443356
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+    md5: 3a45d8c278aae0cdbaa9dec7169cd62a
+    size: 6750
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/03-guide-and-calib-stars
+    md5: 5265fab3606d9f24eb0e3871ec8c4ff3.dir
+    size: 734677
+    nfiles: 6
+clean-xmls@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: swgworkflow/clean_xml_targets.py --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio9/04-cleaned  obs/SV_exp2_DR3_dwarfsonly_onlyprio9/03-guide-and-calib-stars/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/03-guide-and-calib-stars
+    md5: 5265fab3606d9f24eb0e3871ec8c4ff3.dir
+    size: 734677
+    nfiles: 6
+  - path: swgworkflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/04-cleaned
+    md5: 55c8fdfdfa588392981f3f2375f1cc3f.dir
+    size: 470927
+    nfiles: 2
+configure@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio9/05-configured
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio9/04-cleaned/*.xml
+  deps:
+  - path: /soft/configure/configure
+    md5: e3339f7713a55e9a2b22034de0bddf02
+    size: 30224120
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/04-cleaned
+    md5: 55c8fdfdfa588392981f3f2375f1cc3f.dir
+    size: 470927
+    nfiles: 2
+  - path: swgworkflow/configurefields.py
+    md5: a7119ddadac4c7c4d7088b5cf2f0f327
+    size: 6888
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio9.configure_epoch: '2021.5'
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/05-configured
+    md5: f9c7abd3b72b6322b6560dea9693e0d9.dir
+    size: 552525
+    nfiles: 6
+add-configured-to-catalogues@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: swgworkflow/add_configured_to_catalogues.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio9/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-configured/ obs/SV_exp2_DR3_dwarfsonly_onlyprio9/05-configured/*.xml
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9
+    md5: a1358563b01486cc9e76818c316070a2.dir
+    size: 11295378
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio9/05-configured
+    md5: f9c7abd3b72b6322b6560dea9693e0d9.dir
+    size: 552525
+    nfiles: 6
+  - path: swgworkflow/add_configured_to_catalogues.py
+    md5: 97ce3d2ab98cadd078ba8095b769ca31
+    size: 5759
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-configured
+    md5: 1a0a00b999342d28c21ca45a20ef25e2.dir
+    size: 11499840
+    nfiles: 1
+add-configured-to-external-source-lists@SV_exp2_DR3_dwarfsonly_onlyprio9:
+  cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-configured/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-external-configured/ data_repo/external_cats/exp2_SV_DR3/*.fits
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-configured
+    md5: 1a0a00b999342d28c21ca45a20ef25e2.dir
+    size: 11499840
+    nfiles: 1
+  - path: data_repo/external_cats/exp2_SV_DR3
+    md5: 72ee784bbc1c165d91c4c8522d627775.dir
+    size: 1048421
+    nfiles: 4
+  - path: swgworkflow/add_configured_to_source_lists.py
+    md5: 109dbf22bc6158e1af46eeb7e15a0cdc
+    size: 7041
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio9-external-configured
+    md5: 8c0a560ca450f67ffc0ecffc5b24d556.dir
+    size: 2983680
+    nfiles: 2
+downsample_SV_exp2_DR3_onlyprio8:
+  cmd: mkdir -p catalogues/SV_exp2_DR3_dwarfonly_onlyprio8 && swgworkflow/downsample_SVexp2.py
+    --input_catalogue catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits --output_catalogue
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/cat_exp2_SV.fits --downsample_low_prio
+    0.5 --only_prio 8 --overwrite
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+    md5: f7918359f89ad73c0bf9aab07df91d7a
+    size: 42344640
+  - path: swgworkflow/downsample_SVexp2.py
+    md5: dbfce1ce07b9785249809b3fa7c3daf1
+    size: 3645
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/cat_exp2_SV.fits
+    md5: 8c091163cd0a3d500134275ac1737d9c
+    size: 15742080
+make-field-files@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: swgworkflow/make_field_files.py --output obs/SV_exp2_DR3_dwarfsonly_onlyprio8/fields.fits
+    SV_exp2_DR3_dwarfsonly_onlyprio8
+  deps:
+  - path: data_repo/footprints/exp2_SV.fits
+    md5: e8be0825b25859997f9b4042b7184669
+    size: 8640
+  - path: swgworkflow/make_field_files.py
+    md5: ee1213a482bd06ea6c26e76bf544f8e5
+    size: 2261
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio8.footprint:
+        footprint_file: data_repo/footprints/exp2_SV.fits
+        surveys:
+          targsrvys:
+          - WS2021A1-029
+          max_fibres:
+          - 1000
+        progtemp: 11331.1+
+        obstemp: DACEB
+        keywords:
+          trimester: 2020A1
+          author: chriswegg@gmail.com
+          report_verbosity: 1
+          cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/fields.fits
+    md5: 191c0486439eb748fcf99a520a578a9f
+    size: 8640
+create-empty-xmls@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/SV_exp2_DR3_dwarfsonly_onlyprio8/fields.fits
+    --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio8/01-empty
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/fields.fits
+    md5: 191c0486439eb748fcf99a520a578a9f
+    size: 8640
+  - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+    md5: 5992298af881b7810b6fd344f64e2d8b
+    size: 10508
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+add-targets@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues
+    catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/*.fits --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio8/02-targets
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio8/01-empty/*
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8
+    md5: 237aceedb33292f1389fa782e4ac3c80.dir
+    size: 15742098
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/01-empty
+    md5: a249e75339af80adc79b022b38c36cdf.dir
+    size: 37250
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+    md5: 32b352d579d2abf23f03f96d34fe3a0c
+    size: 7229
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/02-targets
+    md5: 5668ea1b7afec1c34c38231f6dc2f668.dir
+    size: 1634627
+    nfiles: 2
+add-guide-and-calib-stars@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio8/03-guide-and-calib-stars obs/SV_exp2_DR3_dwarfsonly_onlyprio8/02-targets/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/02-targets
+    md5: 5668ea1b7afec1c34c38231f6dc2f668.dir
+    size: 1634627
+    nfiles: 2
+  - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+    md5: 3a45d8c278aae0cdbaa9dec7169cd62a
+    size: 6750
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/03-guide-and-calib-stars
+    md5: f4b53b55d95e4a396a6c7ff73c344dae.dir
+    size: 1925948
+    nfiles: 6
+clean-xmls@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: swgworkflow/clean_xml_targets.py --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio8/04-cleaned  obs/SV_exp2_DR3_dwarfsonly_onlyprio8/03-guide-and-calib-stars/*.xml
+  deps:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/03-guide-and-calib-stars
+    md5: f4b53b55d95e4a396a6c7ff73c344dae.dir
+    size: 1925948
+    nfiles: 6
+  - path: swgworkflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/04-cleaned
+    md5: 60c0becb7c6e7e885fb307317f76aa21.dir
+    size: 1662198
+    nfiles: 2
+configure@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --outdir obs/SV_exp2_DR3_dwarfsonly_onlyprio8/05-configured
+    obs/SV_exp2_DR3_dwarfsonly_onlyprio8/04-cleaned/*.xml
+  deps:
+  - path: /soft/configure/configure
+    md5: e3339f7713a55e9a2b22034de0bddf02
+    size: 30224120
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/04-cleaned
+    md5: 60c0becb7c6e7e885fb307317f76aa21.dir
+    size: 1662198
+    nfiles: 2
+  - path: swgworkflow/configurefields.py
+    md5: 88be7a49d53f1af15e6bd4122e782d04
+    size: 6960
+  params:
+    params.yaml:
+      submission.SV_exp2_DR3_dwarfsonly_onlyprio8.configure_epoch: '2021.5'
+  outs:
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/05-configured
+    md5: 98b3470fb1269908a3f539ee73ce579f.dir
+    size: 1876448
+    nfiles: 6
+add-configured-to-catalogues@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: swgworkflow/add_configured_to_catalogues.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-configured/ obs/SV_exp2_DR3_dwarfsonly_onlyprio8/05-configured/*.xml
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8
+    md5: 237aceedb33292f1389fa782e4ac3c80.dir
+    size: 15742098
+    nfiles: 2
+  - path: obs/SV_exp2_DR3_dwarfsonly_onlyprio8/05-configured
+    md5: 98b3470fb1269908a3f539ee73ce579f.dir
+    size: 1876448
+    nfiles: 6
+  - path: swgworkflow/add_configured_to_catalogues.py
+    md5: 97ce3d2ab98cadd078ba8095b769ca31
+    size: 5759
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-configured
+    md5: 31f9481902d09b2cdfad24db57918182.dir
+    size: 16024320
+    nfiles: 1
+add-configured-to-external-source-lists@SV_exp2_DR3_dwarfsonly_onlyprio8:
+  cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-configured/*.fits
+    --outdir catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-external-configured/ data_repo/external_cats/exp2_SV_DR3/*.fits
+  deps:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-configured
+    md5: 31f9481902d09b2cdfad24db57918182.dir
+    size: 16024320
+    nfiles: 1
+  - path: data_repo/external_cats/exp2_SV_DR3
+    md5: 72ee784bbc1c165d91c4c8522d627775.dir
+    size: 1048421
+    nfiles: 4
+  - path: swgworkflow/add_configured_to_source_lists.py
+    md5: 109dbf22bc6158e1af46eeb7e15a0cdc
+    size: 7041
+  outs:
+  - path: catalogues/SV_exp2_DR3_dwarfonly_onlyprio8-external-configured
+    md5: 7b5a5981c1bc5fb8f6a5acbf92fccdca.dir
+    size: 2983680
+    nfiles: 2
+make-field-files@SV_M92:
+  cmd: swgworkflow/make_field_files.py --output obs/SV_M92/fields.fits SV_M92
+  deps:
+  - path: data_repo/footprints/M92_SV.fits
+    md5: 3958ee7a3d0d74a9cd0364484a48f58a
+    size: 8640
+  - path: swgworkflow/make_field_files.py
+    md5: ee1213a482bd06ea6c26e76bf544f8e5
+    size: 2261
+  params:
+    params.yaml:
+      submission.SV_M92.footprint:
+        footprint_file: data_repo/footprints/M92_SV.fits
+        surveys:
+          targsrvys:
+          - WS2021A1-029
+          max_fibres:
+          - 1000
+        progtemp: 11331.1+
+        obstemp: DACEB
+        keywords:
+          trimester: 2020A1
+          author: chriswegg@gmail.com
+          report_verbosity: 1
+          cc_report: vanessa.hill@oca.eu, gbattaglia@iac.es
+      submission.SV_M92.footprint.footprint_file: data_repo/footprints/M92_SV.fits
+  outs:
+  - path: obs/SV_M92/fields.fits
+    md5: 66bc065bdfc55d1200cdbb410953a2f2
+    size: 8640
+create-empty-xmls@SV_M92:
+  cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/SV_M92/fields.fits
+    --outdir obs/SV_M92/01-empty
+  deps:
+  - path: obs/SV_M92/fields.fits
+    md5: 66bc065bdfc55d1200cdbb410953a2f2
+    size: 8640
+  - path: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+    md5: 5992298af881b7810b6fd344f64e2d8b
+    size: 10508
+  outs:
+  - path: obs/SV_M92/01-empty
+    md5: 4ea1cb34c32fc372f824ba6346856a65.dir
+    size: 18631
+    nfiles: 1
+add-targets@SV_M92:
+  cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues
+    catalogues/SV_M92/*.fits --outdir obs/SV_M92/02-targets obs/SV_M92/01-empty/*
+  deps:
+  - path: catalogues/SV_M92
+    md5: 1df79784b2c8148b844df166cd8a3621.dir
+    size: 5978880
+    nfiles: 1
+  - path: obs/SV_M92/01-empty
+    md5: 4ea1cb34c32fc372f824ba6346856a65.dir
+    size: 18631
+    nfiles: 1
+  - path: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+    md5: 32b352d579d2abf23f03f96d34fe3a0c
+    size: 7229
+  outs:
+  - path: obs/SV_M92/02-targets
+    md5: 2e2830f8acc2c67c31a2b2c09ed2480e.dir
+    size: 1260557
+    nfiles: 1
+add-guide-and-calib-stars@SV_M92:
+  cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir
+    obs/SV_M92/03-guide-and-calib-stars obs/SV_M92/02-targets/*.xml
+  deps:
+  - path: obs/SV_M92/02-targets
+    md5: 2e2830f8acc2c67c31a2b2c09ed2480e.dir
+    size: 1260557
+    nfiles: 1
+  - path: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+    md5: 3a45d8c278aae0cdbaa9dec7169cd62a
+    size: 6750
+  outs:
+  - path: obs/SV_M92/03-guide-and-calib-stars
+    md5: 160dcf71309d4eb6c1cdd6e2e16f156d.dir
+    size: 1434130
+    nfiles: 3
+clean-xmls@SV_M92:
+  cmd: swgworkflow/clean_xml_targets.py --outdir obs/SV_M92/04-cleaned  obs/SV_M92/03-guide-and-calib-stars/*.xml
+  deps:
+  - path: obs/SV_M92/03-guide-and-calib-stars
+    md5: 160dcf71309d4eb6c1cdd6e2e16f156d.dir
+    size: 1434130
+    nfiles: 3
+  - path: swgworkflow/clean_xml_targets.py
+    md5: 72f66d86eb41935333f736d806d76c10
+    size: 3285
+  outs:
+  - path: obs/SV_M92/04-cleaned
+    md5: 273bb44afa19ca75a73498c8adc40a3a.dir
+    size: 1272788
+    nfiles: 1
+configure@SV_M92:
+  cmd: swgworkflow/configurefields.py --epoch 2021.5 --sync --outdir obs/SV_M92/05-configured
+    obs/SV_M92/04-cleaned/*.xml
+  deps:
+  - path: /soft/configure/configure
+    md5: e3339f7713a55e9a2b22034de0bddf02
+    size: 30224120
+  - path: obs/SV_M92/04-cleaned
+    md5: 273bb44afa19ca75a73498c8adc40a3a.dir
+    size: 1272788
+    nfiles: 1
+  - path: swgworkflow/configurefields.py
+    md5: 367ed0a96ca42048417595e4e50a958b
+    size: 6966
+  params:
+    params.yaml:
+      submission.SV_M92.configure_epoch: '2021.5'
+  outs:
+  - path: obs/SV_M92/05-configured
+    md5: 0063191608040cac89145c2baf8003f0.dir
+    size: 1438290
+    nfiles: 3
+add-configured-to-catalogues@SV_M92:
+  cmd: swgworkflow/add_configured_to_catalogues.py --catalogues catalogues/SV_M92/*.fits
+    --outdir catalogues/SV_M92-configured/ obs/SV_M92/05-configured/*.xml
+  deps:
+  - path: catalogues/SV_M92
+    md5: 1df79784b2c8148b844df166cd8a3621.dir
+    size: 5978880
+    nfiles: 1
+  - path: obs/SV_M92/05-configured
+    md5: 0063191608040cac89145c2baf8003f0.dir
+    size: 1438290
+    nfiles: 3
+  - path: swgworkflow/add_configured_to_catalogues.py
+    md5: 97ce3d2ab98cadd078ba8095b769ca31
+    size: 5759
+  outs:
+  - path: catalogues/SV_M92-configured
+    md5: 6df5a138238e64c7d9b7593f590731e1.dir
+    size: 6065280
+    nfiles: 1
+add-configured-to-external-source-lists@SV_M92:
+  cmd: swgworkflow/add_configured_to_source_lists.py --catalogues catalogues/SV_M92-configured/*.fits
+    --outdir catalogues/SV_M92-external-configured/ data_repo/external_cats/M92_SV/*.fits
+  deps:
+  - path: catalogues/SV_M92-configured
+    md5: 6df5a138238e64c7d9b7593f590731e1.dir
+    size: 6065280
+    nfiles: 1
+  - path: data_repo/external_cats/M92_SV
+    md5: c3f537f59cb08fa1d55814da26e6e4f7.dir
+    size: 103680
+    nfiles: 1
+  - path: swgworkflow/add_configured_to_source_lists.py
+    md5: 109dbf22bc6158e1af46eeb7e15a0cdc
+    size: 7041
+  outs:
+  - path: catalogues/SV_M92-external-configured
+    md5: e832b1ba1e8db6a2b3cbb1ff55d37d03.dir
+    size: 250560
+    nfiles: 1

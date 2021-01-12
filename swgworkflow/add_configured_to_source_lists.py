@@ -76,11 +76,10 @@ def _check_output_file(output_file, overwrite=False):
 
 
 def add_columns_to_source_list(source_file, target_cats, output_dir,
-                               new_columns, default_values,
+                               new_columns, default_values, suffix,
                                overwrite=False):
-    output_file = _get_output_filename(source_file, output_dir,
-                                       suffix='-configured',
-                                       extension='.fits')
+
+    output_file = _get_output_filename(source_file, output_dir, suffix=suffix)
 
     # If the output file already exists, delete it or continue with the next
     # one
@@ -150,6 +149,9 @@ if __name__ == '__main__':
                         help="""name of the directory which will contain the
                         output source lists""")
 
+    parser.add_argument('--suffix', default='-configured',
+                        help="""suffix to add to the source lists""")
+
     parser.add_argument('--overwrite', action='store_true',
                         help='overwrite the output files')
 
@@ -175,5 +177,6 @@ if __name__ == '__main__':
                                    target_cats=args.catalogues,
                                    new_columns=new_columns,
                                    default_values=default_values,
+                                   suffix=args.suffix,
                                    output_dir=args.output_dir,
                                    overwrite=args.overwrite)

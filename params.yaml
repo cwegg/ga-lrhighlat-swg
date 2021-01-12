@@ -1,4 +1,5 @@
 field_template: 'weaveworkflow/mos/workflow/mos_stage1/aux/mos_field_template.fits'
+
 submission:
   SV_exp1:
     footprint:
@@ -13,12 +14,32 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
     catalogue_dir: 'catalogues/SV_exp1'
     configure_epoch: '2021.5'
-    external_cats: 'data_repo/external_cats/exp1_SV'
-    internal_cats: 'data_repo/internal_cats/exp1_SV'
+    external_cats: 'data_repo/external_cats/exp1_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp1_SV_DR3'
 
-  SV_exp2:
+  SV_M92:
+    footprint:
+      footprint_file: 'data_repo/footprints/M92_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: '"--stop_temp 1"'
+    catalogue_dir: 'catalogues/SV_M92'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/M92_SV'
+    internal_cats: 'data_repo/internal_cats/M92_SV'
+
+  SV_exp2_DR3_dwarfsonly:
     footprint:
       footprint_file: 'data_repo/footprints/exp2_SV.fits'
       surveys:
@@ -31,7 +52,65 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    catalogue_dir: 'catalogues/SV_exp2'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/exp2_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
+
+  SV_exp2_DR3_dwarfsonly_downsample:
+    footprint:
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_downsample'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/exp2_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
+
+  SV_exp2_DR3_dwarfsonly_onlyprio8:
+    footprint:
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_onlyprio8'
+    configure_epoch: '2021.5'
+    external_cats: 'data_repo/external_cats/exp2_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
+
+  SV_exp2_downsample_0p5:
+    footprint:
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
+      surveys:
+        targsrvys: ['WS2021A1-029']
+        max_fibres: [1000]
+      progtemp: '11331.1+'
+      obstemp: 'DACEB'
+      keywords:
+        trimester: '2020A1'
+        author: 'chriswegg@gmail.com'
+        report_verbosity: 1
+        cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
+    catalogue_dir: 'catalogues/SV_exp2_downsample0.5'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV'
     internal_cats: 'data_repo/internal_cats/exp2_SV'
@@ -50,6 +129,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
+    configure_options: ''
     catalogue_dir: 'catalogues/pointed'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/pointed_2021A1'
@@ -69,6 +149,7 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es, WL@weave, WQ@weave'
+    configure_options: ''
     catalogue_dir: 'catalogues/shared'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/shared_2021A1'

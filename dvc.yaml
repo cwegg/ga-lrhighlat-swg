@@ -1,102 +1,150 @@
 stages:
   make-field-files:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
       cmd: swgworkflow/make_field_files.py --output obs/${key}/fields.fits ${key}
       params:
-        - submission.${key}.footprint
+      - submission.${key}.footprint
       deps:
-        - ${item.footprint.footprint_file}
-        - swgworkflow/make_field_files.py
+      - ${item.footprint.footprint_file}
+      - swgworkflow/make_field_files.py
       outs:
-        - obs/${key}/fields.fits
+      - obs/${key}/fields.fits
   create-empty-xmls:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/${key}/fields.fits --outdir obs/${key}/01-empty
+      cmd: weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py obs/${key}/fields.fits
+        --outdir obs/${key}/01-empty
       deps:
-        - obs/${key}/fields.fits
-        - weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
+      - obs/${key}/fields.fits
+      - weaveworkflow/mos/workflow/mos_stage2/create_xml_files.py
       outs:
-        - obs/${key}/01-empty
+      - obs/${key}/01-empty
   add-targets:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues ${item.catalogue_dir}/*.fits --outdir obs/${key}/02-targets obs/${key}/01-empty/*
+      cmd: weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py  --catalogues
+        ${item.catalogue_dir}/*.fits --outdir obs/${key}/02-targets obs/${key}/01-empty/*
       deps:
-        - obs/${key}/01-empty
-        - ${item.catalogue_dir}
-        - weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
+      - obs/${key}/01-empty
+      - ${item.catalogue_dir}
+      - weaveworkflow/mos/workflow/mos_stage3/add_targets_to_xmls.py
       outs:
-        - obs/${key}/02-targets
+      - obs/${key}/02-targets
   add-guide-and-calib-stars:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py --outdir obs/${key}/03-guide-and-calib-stars obs/${key}/02-targets/*.xml
+      cmd: >-
+        weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+        --outdir obs/${key}/03-guide-and-calib-stars obs/${key}/02-targets/*.xml
       deps:
-        - obs/${key}/02-targets
-        - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
+      - obs/${key}/02-targets
+      - weaveworkflow/mos/workflow/mos_stage4/add_guide_and_calib_stars.py
       outs:
-        - obs/${key}/03-guide-and-calib-stars
+      - obs/${key}/03-guide-and-calib-stars
   clean-xmls:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
       cmd: swgworkflow/clean_xml_targets.py --outdir obs/${key}/04-cleaned  obs/${key}/03-guide-and-calib-stars/*.xml
       deps:
-        - obs/${key}/03-guide-and-calib-stars
-        - swgworkflow/clean_xml_targets.py
+      - obs/${key}/03-guide-and-calib-stars
+      - swgworkflow/clean_xml_targets.py
       outs:
-        - obs/${key}/04-cleaned
+      - obs/${key}/04-cleaned
   configure:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: swgworkflow/configurefields.py --epoch ${item.configure_epoch}  --sync --outdir obs/${key}/05-configured obs/${key}/04-cleaned/*.xml
+      cmd: >-
+        swgworkflow/configurefields.py --epoch ${item.configure_epoch} --sync
+        --extra_configure_options submission.${key}.configure_options
+        --outdir obs/${key}/05-configured obs/${key}/04-cleaned/*.xml
       params:
-        - submission.${key}.configure_epoch
+      - submission.${key}.configure_epoch
+      - submission.${key}.configure_options
       deps:
-        - obs/${key}/04-cleaned
-        - swgworkflow/configurefields.py
-        - /soft/configure/configure
+      - obs/${key}/04-cleaned
+      - swgworkflow/configurefields.py
+      - /soft/configure/configure
       outs:
-        - obs/${key}/05-configured
+      - obs/${key}/05-configured
   add-configured-to-catalogues:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: swgworkflow/add_configured_to_catalogues.py --catalogues ${item.catalogue_dir}/*.fits --outdir ${item.catalogue_dir}-configured/  obs/${key}/05-configured/*.xml
+      cmd: >-
+        swgworkflow/add_configured_to_catalogues.py
+        --catalogues ${item.catalogue_dir}/*.fits
+        --outdir ${item.catalogue_dir}-configured/
+        obs/${key}/05-configured/*.xml
       deps:
-        - ${item.catalogue_dir}
-        - swgworkflow/add_configured_to_catalogues.py
-        - obs/${key}/05-configured
+      - ${item.catalogue_dir}
+      - swgworkflow/add_configured_to_catalogues.py
+      - obs/${key}/05-configured
       outs:
-        - ${item.catalogue_dir}-configured
+      - ${item.catalogue_dir}-configured
   add-configured-to-external-source-lists:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}-configured/*.fits --outdir ${item.catalogue_dir}-external-configured/ ${item.external_cats}/*.fits
+      cmd: >-
+        swgworkflow/add_configured_to_source_lists.py
+        --catalogues ${item.catalogue_dir}-configured/*.fits
+        --suffix=-configured-${key}
+        --outdir ${item.catalogue_dir}-external-configured/ ${item.external_cats}/*.fits
       deps:
-        - ${item.catalogue_dir}-configured
-        - ${item.external_cats}
-        - swgworkflow/add_configured_to_source_lists.py
+      - ${item.catalogue_dir}-configured
+      - ${item.external_cats}
+      - swgworkflow/add_configured_to_source_lists.py
       outs:
-        - ${item.catalogue_dir}-external-configured
+      - ${item.catalogue_dir}-external-configured
   add-configured-to-internal-source-lists:
-    foreach:
-      ${submission}
+    foreach: ${submission}
     do:
-      cmd: swgworkflow/add_configured_to_source_lists.py --catalogues ${item.catalogue_dir}-configured/*.fits --outdir ${item.catalogue_dir}-internal-configured/ ${item.internal_cats}/*.fits
+      cmd: >-
+        swgworkflow/add_configured_to_source_lists.py
+        --catalogues ${item.catalogue_dir}-configured/*.fits
+        --suffix=-configured-${key}
+        --outdir ${item.catalogue_dir}-internal-configured/ ${item.internal_cats}/*.fits
       deps:
-        - ${item.catalogue_dir}-configured
-        - ${item.internal_cats}
-        - swgworkflow/add_configured_to_catalogues.py
+      - ${item.catalogue_dir}-configured
+      - ${item.internal_cats}
+      - swgworkflow/add_configured_to_catalogues.py
       outs:
-        - ${item.catalogue_dir}-internal-configured
+      - ${item.catalogue_dir}-internal-configured
 
+  downsample_SV_exp2_DR3_dwarfonly:
+    cmd: >-
+      mkdir -p catalogues/SV_exp2_DR3_dwarfonly_downsample &&
+      swgworkflow/downsample_SVexp2.py
+      --input_catalogue catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+      --output_catalogue catalogues/SV_exp2_DR3_dwarfonly_downsample/cat_exp2_SV.fits
+      --downsample_low_prio 0.5 --overwrite
+    deps:
+    - catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+    - swgworkflow/downsample_SVexp2.py
+    outs:
+    - catalogues/SV_exp2_DR3_dwarfonly_downsample/cat_exp2_SV.fits
 
+  downsample_SV_exp2_DR3_onlyprio8:
+    cmd: >-
+      mkdir -p catalogues/SV_exp2_DR3_dwarfonly_onlyprio8 &&
+      swgworkflow/downsample_SVexp2.py
+      --input_catalogue catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+      --output_catalogue catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/cat_exp2_SV.fits
+      --downsample_low_prio 0.5 --only_prio 8 --overwrite
+    deps:
+    - catalogues/SV_exp2_DR3_dwarfonly/cat_exp2_SV.fits
+    - swgworkflow/downsample_SVexp2.py
+    outs:
+    - catalogues/SV_exp2_DR3_dwarfonly_onlyprio8/cat_exp2_SV.fits
+
+  downsample_SV_exp2_0p5:
+    cmd: >-
+      mkdir -p catalogues/SV_exp2_downsample0.5 &&
+      swgworkflow/downsample_SVexp2.py
+      --input_catalogue catalogues/SV_exp2/cat_exp2_SV.fits
+      --output_catalogue catalogues/SV_exp2_downsample0.5/cat_exp2_SV.fits
+      --downsample_low_prio 0.5 --overwrite
+    deps:
+    - catalogues/SV_exp2/cat_exp2_SV.fits
+    - swgworkflow/downsample_SVexp2.py
+    outs:
+    - catalogues/SV_exp2_downsample0.5/cat_exp2_SV.fits
