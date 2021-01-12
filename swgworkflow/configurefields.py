@@ -4,11 +4,13 @@ import os.path
 import argparse
 import logging
 import subprocess
+import multiprocessing
 
 def _is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
     from shutil import which
     return which(name) is not None
+
 
 def _run_command(command):
     return subprocess.check_output(command, shell=True).decode("utf-8").strip()
@@ -20,7 +22,7 @@ def configure_fields(xml_file_list, output_dir,
                      overwrite=False, threads=8,
                      extra_configure_options='',
                      extra_qsub_options='',
-                     epoch='2021.5'):
+                     epoch='2021.5', seed=42):
     """
     Run xml files through configure tool to place fibres
 
@@ -49,7 +51,7 @@ def configure_fields(xml_file_list, output_dir,
     """
 
     output_file_list = []
-    job_id_list =[]
+    job_id_list = []
     for xml_file in xml_file_list:
 
         # Check that the input XML exists and is a file
@@ -87,6 +89,7 @@ def configure_fields(xml_file_list, output_dir,
 
         command = '{} --gui 0 '.format(configure_path)
         command += '--epoch {} '.format(epoch)
+        command += '--seed {} '.format(seed)
         command += '--threads {} '.format(threads)
         command += '--field {} '.format(os.path.abspath(xml_file))
         command += '--output {} '.format(os.path.abspath(output_file))
@@ -95,13 +98,13 @@ def configure_fields(xml_file_list, output_dir,
         if qsub:
             # Construct qsub command to submit job
             job_name = input_basename_wo_ext
-            command = 'echo "{}" | qsub -l pmem=8gb -l '.format(command)
+            command = 'echo "{}" | qsub -l pmem=16gb -l '.format(command)
             command += 'walltime=12:00:00 -l nodes=1:ppn={} '.format(threads)
             command += '-o {}/{}.stdout '.format(output_dir,
                                                  output_basename_wo_ext)
             command += '-e {}/{}.stderr '.format(output_dir,
                                                  output_basename_wo_ext)
-            command += '-N {} {} -'.format(job_name,extra_qsub_options)
+            command += '-N {} {} -'.format(job_name, extra_qsub_options)
             logging.info('Running command: {}'.format(command))
             job_id = _run_command(command)
             job_id_list.append(job_id)
@@ -131,7 +134,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Run XML files through configure tool to place fibres')
 
-    parser.add_argument('xml_file_list',nargs='+',
+    parser.add_argument('xml_file_list', nargs='+',
                         help="""The list of xml files""")
 
     parser.add_argument('--configure_path',
@@ -139,11 +142,22 @@ if __name__ == '__main__':
                         help="""Path to configure executable""")
 
     parser.add_argument('--outdir', dest='output_dir', default='output',
-                        help="""name of the directory which will containe the
+                        help="""name of the directory which will contain the
                         output XML files""")
 
     parser.add_argument('--epoch', default='2021.5',
                         help='Epoch of observation')
+
+    parser.add_argument('--seed', default=42, type=int,
+                        help='Random seed passed to configure')
+
+    parser.add_argument('--threads', default=0, type=int,
+                        help='Number of threads to run configure with. '
+                             'By default will use all available cores.')
+
+    parser.add_argument('--extra_configure_options', default='',
+                        help='extra command line options to be passed to '
+                             'configure (enclose in quotes)')
 
     parser.add_argument('--qsub', default='auto',
                         choices=['auto', 'yes', 'no'],
@@ -175,12 +189,22 @@ if __name__ == '__main__':
     elif args.qsub == 'yes':
         qsub = True
     else:
-        qsub= False
+        qsub = False
 
+    if args.threads == 0:
+        if qsub:
+            threads = 8 #default of 8 threads on herts cluster
+        else:
+            threads = multiprocessing.cpu_count()
+    else:
+        threads = args.threads
 
     configure_fields(args.xml_file_list, args.output_dir,
                      epoch=args.epoch,
                      sync=args.sync,
                      qsub=qsub,
                      configure_path=args.configure_path,
-                     overwrite=args.overwrite)
+                     overwrite=args.overwrite,
+                     seed=args.seed,
+                     threads = threads,
+                     extra_configure_options=args.extra_configure_options)
