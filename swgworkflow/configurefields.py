@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import time
-import os.path
 import argparse
 import logging
-import subprocess
 import multiprocessing
+import os.path
+import subprocess
+import time
+
 
 def _is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
@@ -14,6 +15,77 @@ def _is_tool(name):
 
 def _run_command(command):
     return subprocess.check_output(command, shell=True).decode("utf-8").strip()
+
+
+def _copy_empty_xmls(xml_file_list, output_dir):
+    """Helper function that removes the targets from the files in xml_file_list"""
+    import xml.etree.ElementTree as ET
+    output_file_list = []
+    for xml_file in xml_file_list:
+        output_file = os.path.join(output_dir, os.path.basename(xml_file))
+        # read xml
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        field_list = root.findall('.//field')
+        assert len(field_list) == 1, "Only a single field is allowed in MOS configurations"
+        field = root.find('.//field')
+        # delete targets
+        for target in list(field)[::-1]:
+            field.remove(target)
+        # write to file
+        tree.write(output_file)
+        output_file_list.append(output_file)
+    return output_file_list
+
+
+def _filter_xmls_by_targprio(xml_file_list, intermediate_files, output_dir, targprio_boundary=-1):
+    """We take a list of intermediate files (intermediate_files), and add the targets from the files in xml_file_list
+    that have targprio > targprio_boundary.
+
+    This multistage configuration, first configuring the highest targprio targets seperately, freezing the fibres and
+    then adding more lower priority targets.
+    """
+    import xml.etree.ElementTree as ET
+
+    output_file_list = []
+
+    assert len(intermediate_files) == len(xml_file_list)
+
+    for xml_file, intermediate_file in zip(xml_file_list, intermediate_files):
+        # read intermediate xml
+        intermediate_tree = ET.parse(intermediate_file)
+        intermediate_root = intermediate_tree.getroot()
+        intermediate_field = intermediate_root.find('.//field')
+        num_initial_targets = len(intermediate_root.findall('.//target'))
+
+        # uniqueness of target in xml is set by targsrvy and targid
+        def targ_uid(target):
+            targsrvy = target.get('targsrvy', None)
+            targid = target.get('targid', None)
+            return targsrvy, targid
+
+        intermediate_targets = set()
+        for target in intermediate_root.findall('.//target'):
+            intermediate_targets.add(targ_uid(target))
+
+        # read input xml
+        input_root = ET.parse(xml_file).getroot()
+        # find targets > targprio_boundary and add them
+        for target in input_root.findall('.//target'):
+            if float(target.get('targprio', default='-inf')) > targprio_boundary and \
+                    targ_uid(target) not in intermediate_targets:
+                intermediate_field.append(target)
+
+        # write intermediate xml to output_dir
+        output_file = os.path.join(output_dir, os.path.basename(xml_file))
+        intermediate_tree.write(output_file)
+        output_file_list.append(output_file)
+        num_final_targets = len(intermediate_root.findall('.//target'))
+        num_total_targets = len(input_root.findall('.//target'))
+
+        logging.info(f'File {xml_file} with {num_total_targets} targets.  Initially {num_initial_targets} targets in'
+                     f' {intermediate_file}. Afterwards {num_final_targets} targets in {output_file}.')
+    return output_file_list
 
 
 def configure_fields(xml_file_list, output_dir,
@@ -58,7 +130,7 @@ def configure_fields(xml_file_list, output_dir,
 
         assert os.path.isfile(xml_file)
 
-        # Choose the output filename depedending on the input filename
+        # Choose the output filename depending on the input filename
 
         input_basename_wo_ext = os.path.splitext(os.path.basename(xml_file))[0]
 
@@ -116,7 +188,7 @@ def configure_fields(xml_file_list, output_dir,
     if sync and qsub and len(job_id_list) > 0:
         jobs_names = ':'.join(job_id_list)
         command = 'echo "echo Done" | qsub  -W depend=afterany:{} '.format(jobs_names)
-        command += '-o /dev/null -e /dev/null'
+        command += '-o /dev/null -e /dev/null -N sync'
         logging.info('Running command: {}'.format(command))
         sync_job = subprocess.check_output(command, shell=True).decode(
             "utf-8").strip()
@@ -134,7 +206,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Run XML files through configure tool to place fibres')
 
-    parser.add_argument('xml_file_list', nargs='+',
+    parser.add_argument('--xml_file_list', nargs='+',
                         help="""The list of xml files""")
 
     parser.add_argument('--configure_path',
@@ -166,8 +238,8 @@ if __name__ == '__main__':
                              'typically be running this script on the headnode')
 
     parser.add_argument('--sync', action='store_true',
-                        help='Should the script wait for the configure task '
-                             'to finish before returning')
+                        help='If submitting with qsubm should the script wait '
+                             'for the configure tasks to finish before returning')
 
     parser.add_argument('--overwrite', dest='overwrite', action='store_true',
                         help='overwrite the output files')
@@ -175,6 +247,15 @@ if __name__ == '__main__':
     parser.add_argument('--log_level', default='info',
                         choices=['debug', 'info', 'warning', 'error'],
                         help='the level for the logging messages')
+
+    parser.add_argument('--multistage', default='-1', nargs='+', type=float,
+                        help='Run configure multiple times, each time freezing the '
+                             'previously allocated fibres. The list of numbers are '
+                             'the boundaries of targprio i.e. with --multistage 6 2 '
+                             'configure will be run 3 times. First fibres will be '
+                             'allocated to the targprio>=6 targets, configure will '
+                             'be run a second time allocating spare fibres to targprio>=2, '
+                             'and a final time for any remaining fibres.')
 
     args = parser.parse_args()
 
@@ -193,18 +274,63 @@ if __name__ == '__main__':
 
     if args.threads == 0:
         if qsub:
-            threads = 8 #default of 8 threads on herts cluster
+            threads = 8  # default of 8 threads on herts cluster
         else:
             threads = multiprocessing.cpu_count()
     else:
         threads = args.threads
 
-    configure_fields(args.xml_file_list, args.output_dir,
-                     epoch=args.epoch,
-                     sync=args.sync,
-                     qsub=qsub,
-                     configure_path=args.configure_path,
-                     overwrite=args.overwrite,
-                     seed=args.seed,
-                     threads = threads,
-                     extra_configure_options=args.extra_configure_options)
+    if args.multistage[0] <= 0:
+        # Single stage configure
+        configure_fields(args.xml_file_list, args.output_dir,
+                         epoch=args.epoch,
+                         sync=args.sync,
+                         qsub=qsub,
+                         configure_path=args.configure_path,
+                         overwrite=args.overwrite,
+                         seed=args.seed,
+                         threads=threads,
+                         extra_configure_options=args.extra_configure_options)
+    else:
+        # multistage stage configure
+
+        assert all(prio > 0 for prio in args.multistage), \
+            'All your multistage targprio boundaries should be > 0'
+
+        targ_prio_boundaries = args.multistage + [-1]  # We give the last stage a negative targprio so nothing gets filtered
+
+        # for the first run we use --sky_search=0
+        extra_configure_options = args.extra_configure_options + ' --sky_search=0'
+        output_dir = args.output_dir
+
+        intermediate_post_configure_dir = os.path.join(args.output_dir, 'stage-0-empty')
+        os.makedirs(intermediate_post_configure_dir, exist_ok=True)
+        intermediate_post_configured_files = _copy_empty_xmls(args.xml_file_list, intermediate_post_configure_dir)
+
+        for stage, targprio_boundary in enumerate(targ_prio_boundaries):
+            intermediate_pre_configure_dir = os.path.join(args.output_dir, 'stage-{}-pre-configure'.format(stage))
+            os.makedirs(intermediate_pre_configure_dir, exist_ok=True)
+
+            intermediate_pre_configure_files = _filter_xmls_by_targprio(args.xml_file_list,
+                                                                        intermediate_post_configured_files,
+                                                                        intermediate_pre_configure_dir,
+                                                                        targprio_boundary)
+
+            if targprio_boundary < 0:
+                # Final configuration
+                output_dir = args.output_dir
+            else:
+                output_dir = os.path.join(args.output_dir, 'stage-{}-post-configure'.format(stage))
+                os.makedirs(output_dir, exist_ok=True)
+
+            intermediate_post_configured_files = configure_fields(intermediate_pre_configure_files, output_dir,
+                                                                  epoch=args.epoch,
+                                                                  sync=args.sync,
+                                                                  qsub=qsub,
+                                                                  configure_path=args.configure_path,
+                                                                  overwrite=args.overwrite,
+                                                                  seed=args.seed,
+                                                                  threads=threads,
+                                                                  extra_configure_options=args.extra_configure_options)
+            # for all apart from the first run we use --preallocate-guide=0
+            extra_configure_options = args.extra_configure_options + ' --preallocate-guide=0'

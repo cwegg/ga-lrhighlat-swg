@@ -135,50 +135,6 @@ def parse_configure_xml_summary(xml_file: str) -> pd.DataFrame:
     return df
 
 
-def xml_field_plot(xml_file):
-    target_df = parse_configure_xml_targets(xml_file)
-    summary_df = parse_configure_xml_summary(xml_file)
-    targsrvys = target_df.targsrvy.unique()
-    npanels = len(targsrvys)
-    ncols = int(np.sqrt(npanels))
-    nrows = int(np.ceil(npanels / ncols)) + 1
-    fig, axs = plt.subplots(nrows, ncols, squeeze=False, sharex=True, sharey=True, figsize=(12, 12))
-    flat_axs = np.array(axs).flatten()
-
-    ax = plt.subplot(nrows, 1, 1)
-    ax.axis('off')
-    the_table = ax.table(cellText=summary_df.round(2).values.T, rowLabels=summary_df.columns, loc='center',
-                         bbox=[0.35, 0, 0.3, 1.0])
-
-    for ax, targsrvy in zip(flat_axs[2:], targsrvys):
-        df_plt = target_df[(target_df.assigned == False) & (target_df.targsrvy == targsrvy)]
-        ax.plot(df_plt.targra, df_plt.targdec, 'r.')
-        df_plt = target_df[(target_df.assigned == True) & (target_df.targsrvy == targsrvy)]
-        ax.plot(df_plt.targra, df_plt.targdec, 'g.')
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        ax.set_title(targsrvy)
-    _ = plt.setp(axs[-1, :], xlabel='ra [deg]')
-    _ = plt.setp(axs[:, 0], ylabel='dec [deg]')
-    return fig
-
-
-def xml_field_plots(xml_file_pattern, filename):
-    from matplotlib.backends.backend_pdf import PdfPages
-    if isinstance(xml_file_pattern,str):
-        xml_files = glob.glob(xml_file_pattern)
-    else:
-        xml_files = xml_file_pattern
-    with PdfPages(filename) as pdf:
-        for xml_file in xml_files:
-            try:
-                fig = xml_field_plot(xml_file)
-                pdf.savefig(bbox_inches='tight')
-                plt.close()
-            except Exception as e:
-                print(f"An exception occurred reading {xml_file} : {e}")
-
-
 def parse_configured_xmls(files):
     summarys = []
     targets = []

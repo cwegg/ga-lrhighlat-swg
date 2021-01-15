@@ -14,15 +14,16 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
+    configure_options: '""'
+    multistage: "-1"
     catalogue_dir: 'catalogues/SV_exp1'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp1_SV_DR3'
     internal_cats: 'data_repo/internal_cats/exp1_SV_DR3'
 
-  SV_M92_center:
+  SV_exp2_targprio_tweak:
     footprint:
-      footprint_file: 'data_repo/footprints/M92_SV.fits'
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
       surveys:
         targsrvys: ['WS2021A1-029']
         max_fibres: [1000]
@@ -33,15 +34,16 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
-    catalogue_dir: 'catalogues/SV_M92_center'
+    configure_options: '""'
+    multistage: "4"
+    catalogue_dir: 'catalogues/SV_exp2_targprio_tweak'
     configure_epoch: '2021.5'
-    external_cats: 'data_repo/external_cats/M92_center'
-    internal_cats: 'data_repo/internal_cats/M92_SV'
+    external_cats: 'data_repo/external_cats/exp2_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
 
-  SV_M92_outside:
+  SV_exp2:
     footprint:
-      footprint_file: 'data_repo/footprints/M92_SV.fits'
+      footprint_file: 'data_repo/footprints/exp2_SV.fits'
       surveys:
         targsrvys: ['WS2021A1-029']
         max_fibres: [1000]
@@ -52,11 +54,12 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
-    catalogue_dir: 'catalogues/SV_M92_outside'
+    configure_options: '""'
+    multistage: "8"
+    catalogue_dir: 'catalogues/SV_exp2'
     configure_epoch: '2021.5'
-    external_cats: 'data_repo/external_cats/M92_outside'
-    internal_cats: 'data_repo/internal_cats/M92_SV'
+    external_cats: 'data_repo/external_cats/exp2_SV_DR3'
+    internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
 
   SV_exp2_DR3_dwarfsonly:
     footprint:
@@ -71,13 +74,14 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
+    configure_options: '""'
+    multistage: "-1"
     catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV_DR3'
     internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
 
-  SV_exp2_DR3_dwarfsonly_downsample:
+  SV_exp2_DR3_dwarfsonly_onlyprio8_multistage:
     footprint:
       footprint_file: 'data_repo/footprints/exp2_SV.fits'
       surveys:
@@ -90,13 +94,14 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
-    catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_downsample'
+    configure_options: '""'
+    multistage: "4"
+    catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_onlyprio8'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV_DR3'
     internal_cats: 'data_repo/internal_cats/exp2_SV_DR3'
 
-  SV_exp2_DR3_dwarfsonly_onlyprio8:
+  SV_exp2_DR3_dwarfsonly_onlyprio8_default:
     footprint:
       footprint_file: 'data_repo/footprints/exp2_SV.fits'
       surveys:
@@ -109,7 +114,8 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: '"--stop_temp 0.1 --start_temp 50"'
+    configure_options: '""'
+    multistage: "-1"
     catalogue_dir: 'catalogues/SV_exp2_DR3_dwarfonly_onlyprio8'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV_DR3'
@@ -128,7 +134,8 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
+    configure_options: '""'
+    multistage: "4"
     catalogue_dir: 'catalogues/SV_exp2_downsample0.5'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/exp2_SV'
@@ -148,7 +155,8 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es'
-    configure_options: ''
+    configure_options: '""'
+    multistage: "-1"
     catalogue_dir: 'catalogues/pointed'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/pointed_2021A1'
@@ -168,7 +176,8 @@ submission:
         author: 'chriswegg@gmail.com'
         report_verbosity: 1
         cc_report: 'vanessa.hill@oca.eu, gbattaglia@iac.es, WL@weave, WQ@weave'
-    configure_options: ''
+    configure_options: '""'
+    multistage: "-1"
     catalogue_dir: 'catalogues/shared'
     configure_epoch: '2021.5'
     external_cats: 'data_repo/external_cats/shared_2021A1'
