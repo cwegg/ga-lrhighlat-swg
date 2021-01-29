@@ -94,24 +94,33 @@ def add_distance_to_field_center(df, summaries, radius_boundaries=(0.0, 0.1, 0.2
 def plot_assigned_vs_distance_to_field_center(targets, summaries,
                                               radius_boundaries=(0.0, 0.1, 0.2, 0.4, 1.0)):
     targets = targets.copy()
+    print()
+
     add_distance_to_field_center(targets, summaries, radius_boundaries)
     distances = targets['distance_to_center'].unique()
 
-    fig, axs = plt.subplots(len(distances), 3, sharex='all', figsize=(10, 10))
+    fig, axs = plt.subplots(len(distances), 3, sharex='row', figsize=(10, 10))
     count_axs, assigned_axs, fraction_axs = axs.T
+
+    order = targets['TARGPRIO'].unique()
+    order.sort()
 
     for distance, count_ax, assigned_ax, fraction_ax in zip(distances, count_axs, assigned_axs, fraction_axs):
         df = targets[targets['distance_to_center'] == distance]
-        sns.countplot(data=df, x='TARGPRIO', palette="dark", alpha=.6, ax=count_ax)
+        sns.countplot(data=df, x='TARGPRIO', palette="dark", alpha=.6, ax=count_ax, order=order)
+        print(df['TARGPRIO'].unique())
+
         count_ax.set_xlabel(None)
         count_ax.set_ylabel('# Targets')
 
-        sns.countplot(data=df[df['ASSIGNED'] > 0], x='TARGPRIO', palette="dark", alpha=.6, ax=assigned_ax)
+        sns.countplot(data=df[df['ASSIGNED'] > 0], x='TARGPRIO', palette="dark", alpha=.6,
+                      ax=assigned_ax, order=order)
         assigned_ax.set_xlabel(None)
         assigned_ax.set_ylabel('Fibres Assigned')
         assigned_ax.set_title(f'Distance to field center [deg]: {distance}')
 
-        sns.barplot(data=df, x='TARGPRIO', y='ASSIGNED', palette="dark", alpha=.6, ax=fraction_ax)
+        sns.barplot(data=df, x='TARGPRIO', y='ASSIGNED', palette="dark", alpha=.6, ax=fraction_ax,
+                    order=order)
         fraction_ax.set_xlabel(None)
         fraction_ax.set_ylabel('Fraction of Targets\nAssigned Fibres')
 
@@ -190,16 +199,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Make plots of GA-LRHighLat configured fields')
 
-    parser.add_argument('--submission', default='all',
-                        help="""Submission from params.yaml to plot""")
-
-    parser.add_argument('--plot_dir', default='plot/',
+    parser.add_argument('--output_dir', default='plots',
                         help="""name of the directory which will contain the 
                         plots""")
 
-    parser.add_argument('--output_dir', default='output',
+    parser.add_argument('--submission_location', default='submission_location',
                         help="""name of the directory which contains the 
                         configured fields""")
+
+    parser.add_argument('--prefix', default='',
+                        help="""Prefix to be added to plots.""")
 
     parser.add_argument('--file_format', default='png',
                         choices=['png', 'pdf'],
@@ -257,18 +266,17 @@ if __name__ == '__main__':
     elif args.plot == 'source_list':
         plot_targprio_by_sourcelist = True
 
-    submission, plot_format = args.submission, args.file_format
+    plot_format = args.file_format
+    plot_prefix = os.path.join(args.output_dir, args.prefix)
+    os.makedirs(args.output_dir, exist_ok=True)
 
-    plot_prefix = args.plot_dir + submission
-    os.makedirs(args.plot_dir, exist_ok=True)
-
-    configured_catalogue_file = glob.glob(f'{args.output_dir}/{submission}/catalogs-configured/*.fits')[0]
-    configured_xmls = f'{args.output_dir}/{submission}/05-configured/*.xml'
-    source_lists = f'{args.output_dir}/{submission}/source-lists-configured/*.fits'
+    configured_catalogue_file = glob.glob(f'{args.submission_location}/catalogs-configured/*.fits')[0]
+    configured_xmls = f'{args.submission_location}/05-configured/*.xml'
+    source_lists = f'{args.submission_location}/source-lists-configured/*.fits'
     logging.info(f'Using configured catalogue: {configured_catalogue_file}')
     logging.info(f'Parsing configured xmls from: {configured_xmls}')
     logging.info(f'Using internal source lists from: {source_lists}')
-    logging.info(f'Creating plots in: {args.plot_dir}')
+    logging.info(f'Creating plots in: {args.output_dir}')
 
     sns.set()  # set plot style
 
@@ -284,7 +292,7 @@ if __name__ == '__main__':
     summaries, xml_targets = parse_configured_xmls(configured_xmls)
 
     if plot_summary:
-        dfi.export(summaries, f'{plot_prefix}_summary.{plot_format}')
+        dfi.export(summaries, f'{plot_prefix}_summary.{plot_format}', table_conversion='matplotlib')
 
     if plot_fields and plot_by_field:
         for field_name in targets.FIELD_NAME.unique():
@@ -313,7 +321,7 @@ if __name__ == '__main__':
                 col_wrap=3
             )
             g.savefig(f'{plot_prefix}_Assignment_Probablity_By_Field.{plot_format}')
-            for field_name in sky.FIELD_NAME.unique():
+            for field_name in targets.FIELD_NAME.unique():
                 field_targets = targets[targets['FIELD_NAME'] == field_name]
                 fig = assignment_vs_targprio(field_targets)
                 fig.suptitle(f'{field_name}')
@@ -322,9 +330,10 @@ if __name__ == '__main__':
                 plt.close()
 
     if plot_by_distance:
-        for field_name in sky.FIELD_NAME.unique():
+        for field_name in targets.FIELD_NAME.unique():
             field_targets = targets[targets['FIELD_NAME'] == field_name]
-            fig = plot_assigned_vs_distance_to_field_center(targets, summaries)
+            print(field_targets['TARGPRIO'].unique())
+            fig = plot_assigned_vs_distance_to_field_center(field_targets, summaries)
             fig.suptitle(f'{field_name} assignment vs distance to cluster center')
             fig.tight_layout()
             fig.savefig(f'{plot_prefix}_{field_name}_assignment_vs_distance.{plot_format}')
@@ -351,7 +360,7 @@ if __name__ == '__main__':
         files = glob.glob(source_lists)
         df = summary_by_source_list(files)
         df['FractionAssigned'] = df['FractionAssigned'].map('{:,.2f}'.format)
-        dfi.export(df, f'{plot_prefix}_source_list_summary.{plot_format}')
+        dfi.export(df, f'{plot_prefix}_source_list_summary.{plot_format}', table_conversion='matplotlib')
 
     if plot_targprog_confusion:
         fig, ax = plt.subplots(2, 1, figsize=(8, 8))
@@ -363,7 +372,7 @@ if __name__ == '__main__':
     if plot_summary_by_targprog:
         df = summary_by_targprog(targets)
         df['FractionAssigned'] = df['FractionAssigned'].map('{:,.2f}'.format)
-        dfi.export(df, f'{plot_prefix}_targ_prog_summary.{plot_format}')
+        dfi.export(df, f'{plot_prefix}_targ_prog_summary.{plot_format}', table_conversion='matplotlib')
 
     if plot_targprio_by_sourcelist:
         data = []

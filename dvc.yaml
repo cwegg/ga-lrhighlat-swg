@@ -100,6 +100,21 @@ stages:
       - swgworkflow/add_configured_to_source_lists.py
       outs:
       - output/${key}/source-lists-configured
+  make-configure-diagnostic-plots:
+    foreach: ${submission}
+    do:
+      cmd: >-
+        swgworkflow/configureplots.py
+        --output_dir output/${key}/plots/
+        --submission_location output/${key}
+        --prefix ${key}
+      deps:
+        - output/${key}/catalogs-configured
+        - output/${key}/source-lists-configured
+        - swgworkflow/configureplots.py
+      outs:
+        - output/${key}/plots
+
   downsample_SV_exp2_DR3_onlyprio8:
     cmd: >-
       mkdir -p catalogues/SV_exp2_DR3_dwarfonly_onlyprio8 &&
