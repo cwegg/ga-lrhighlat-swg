@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
-import numpy as np
-import astropy.table
-from astropy.table import Table
 import copy
+import logging
+
+import astropy.table
+import numpy as np
+from astropy.table import Table
 
 
 def alter_catalogue(input_file, output_file, downsample_low_prio=1.0,
@@ -64,6 +65,9 @@ if __name__ == '__main__':
     Catalogue targets with prio 2 and 4 by this fraction""", default=1.0,
                         type=float)
 
+    parser.add_argument('--sky_downsample', help="""Downsample SV Exp2 
+    sky targets by this fraction""", default=1.0, type=float)
+
     parser.add_argument('--only_prio', help="""Only keep targets with targprio 
     greater or equal to this value""", default=0.0, type=float)
 
@@ -91,4 +95,4 @@ if __name__ == '__main__':
     alter_catalogue(args.input_catalogue, args.output_catalogue,
                     downsample_low_prio=args.downsample_low_prio,
                     overwrite=args.overwrite, seed=args.seed,
-                    targprio_map=targprio_map)
+                    targprio_map=targprio_map, sky_downsample=args.sky_downsample)
